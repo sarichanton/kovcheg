@@ -695,6 +695,175 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Русский язык",
+      "slug": "russian",
+      "icon": "IconBooks",
+      "description": "Русскоязычные справочники, библиотека, медицина и образование для офлайн-доступа.",
+      "language": "ru",
+      "tiers": [
+        {
+          "name": "Справочники",
+          "slug": "russian-reference",
+          "description": "Викисловарь, Викицитатник, Викиучебник и Викигид — основные русскоязычные справочники. Начните отсюда.",
+          "recommended": true,
+          "resources": [
+            {
+              "id": "wiktionary_ru_all_nopic",
+              "version": "2026-09",
+              "title": "Викисловарь",
+              "description": "Русский Викисловарь без изображений — толкования, переводы и этимология слов",
+              "url": "https://download.kiwix.org/zim/wiktionary/wiktionary_ru_all_nopic_2026-09.zim",
+              "size_mb": 2146
+            },
+            {
+              "id": "wikiquote_ru_all_nopic",
+              "version": "2026-10",
+              "title": "Викицитатник",
+              "description": "Сборник цитат и афоризмов на русском языке без изображений",
+              "url": "https://download.kiwix.org/zim/wikiquote/wikiquote_ru_all_nopic_2026-10.zim",
+              "size_mb": 149
+            },
+            {
+              "id": "wikibooks_ru_all_nopic",
+              "version": "2026-10",
+              "title": "Викиучебник",
+              "description": "Русскоязычные учебники и методические материалы без изображений",
+              "url": "https://download.kiwix.org/zim/wikibooks/wikibooks_ru_all_nopic_2026-10.zim",
+              "size_mb": 44
+            },
+            {
+              "id": "wikivoyage_ru_all_nopic",
+              "version": "2026-09",
+              "title": "Викигид",
+              "description": "Русскоязычный путеводитель по странам и городам без изображений",
+              "url": "https://download.kiwix.org/zim/wikivoyage/wikivoyage_ru_all_nopic_2026-09.zim",
+              "size_mb": 116
+            }
+          ]
+        },
+        {
+          "name": "Библиотека",
+          "slug": "russian-library",
+          "description": "Полные тексты, учебные материалы и детская энциклопедия. Включает «Справочники».",
+          "includesTier": "russian-reference",
+          "resources": [
+            {
+              "id": "wikisource_ru_all_nopic",
+              "version": "2026-10",
+              "title": "Викитека",
+              "description": "Русскоязычная библиотека оригинальных текстов без изображений",
+              "url": "https://download.kiwix.org/zim/wikisource/wikisource_ru_all_nopic_2026-10.zim",
+              "size_mb": 3817
+            },
+            {
+              "id": "wikiversity_ru_all_nopic",
+              "version": "2026-10",
+              "title": "Викиверситет",
+              "description": "Учебные курсы и материалы русского Викиверситета без изображений",
+              "url": "https://download.kiwix.org/zim/wikiversity/wikiversity_ru_all_nopic_2026-10.zim",
+              "size_mb": 22
+            },
+            {
+              "id": "open-textbook-library_ru_all",
+              "version": "2026-11",
+              "title": "Библиотека открытых учебников",
+              "description": "Бесплатные рецензируемые учебники на русском языке",
+              "url": "https://download.kiwix.org/zim/other/open-textbook-library_ru_all_2026-11.zim",
+              "size_mb": 43
+            },
+            {
+              "id": "vikidia_ru_all_nopic",
+              "version": "2026-09",
+              "title": "Vikidia — детская энциклопедия",
+              "description": "Русскоязычная энциклопедия для детей и подростков без изображений",
+              "url": "https://download.kiwix.org/zim/vikidia/vikidia_ru_all_nopic_2026-09.zim",
+              "size_mb": 1
+            }
+          ]
+        },
+        {
+          "name": "Медицина и наука",
+          "slug": "russian-science",
+          "description": "Медицинская Википедия, молекулярная биология, математика, физика, информатика и химия. Включает «Библиотеку».",
+          "includesTier": "russian-library",
+          "resources": [
+            {
+              "id": "wikipedia_ru_medicine_maxi",
+              "version": "2026-10",
+              "title": "Медицинская Википедия",
+              "description": "Статьи русской Википедии по медицине с иллюстрациями",
+              "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_medicine_maxi_2026-10.zim",
+              "size_mb": 321
+            },
+            {
+              "id": "wikipedia_ru_molcell_maxi",
+              "version": "2026-10",
+              "title": "Молекулярная биология",
+              "description": "Статьи по молекулярной и клеточной биологии с иллюстрациями",
+              "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_molcell_maxi_2026-10.zim",
+              "size_mb": 115
+            },
+            {
+              "id": "wikipedia_ru_mathematics_nopic",
+              "version": "2026-10",
+              "title": "Математика",
+              "description": "Статьи русской Википедии по математике без изображений",
+              "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_mathematics_nopic_2026-10.zim",
+              "size_mb": 114
+            },
+            {
+              "id": "wikipedia_ru_physics_nopic",
+              "version": "2026-10",
+              "title": "Физика",
+              "description": "Статьи русской Википедии по физике без изображений",
+              "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_physics_nopic_2026-10.zim",
+              "size_mb": 102
+            },
+            {
+              "id": "wikipedia_ru_computer_nopic",
+              "version": "2026-10",
+              "title": "Информатика",
+              "description": "Статьи русской Википедии по информатике и вычислениям без изображений",
+              "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_computer_nopic_2026-10.zim",
+              "size_mb": 126
+            },
+            {
+              "id": "wikipedia_ru_chemistry_maxi",
+              "version": "2026-10",
+              "title": "Химия",
+              "description": "Статьи русской Википедии по химии с иллюстрациями",
+              "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_chemistry_maxi_2026-10.zim",
+              "size_mb": 77
+            }
+          ]
+        },
+        {
+          "name": "Программирование",
+          "slug": "russian-programming",
+          "description": "Русскоязычные сообщества Stack Overflow и Stack Exchange по программированию и русскому языку. Включает «Медицину и науку».",
+          "includesTier": "russian-science",
+          "resources": [
+            {
+              "id": "ru.stackoverflow.com_mul_all",
+              "version": "2026-10",
+              "title": "Stack Overflow на русском",
+              "description": "Вопросы и ответы для программистов на русском языке",
+              "url": "https://download.kiwix.org/zim/stack_exchange/ru.stackoverflow.com_mul_all_2026-10.zim",
+              "size_mb": 2691
+            },
+            {
+              "id": "rus.stackexchange.com_mul_all",
+              "version": "2026-10",
+              "title": "Русский язык — Stack Exchange",
+              "description": "Вопросы и ответы о лингвистике и русском языке",
+              "url": "https://download.kiwix.org/zim/stack_exchange/rus.stackexchange.com_mul_all_2026-10.zim",
+              "size_mb": 128
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "spec_version": "2026-08-02",
+  "spec_version": "2026-11-17",
   "options": [
     {
       "id": "none",
@@ -8,6 +8,54 @@
       "size_mb": 0,
       "url": null,
       "version": null
+    },
+    {
+      "id": "ru-top-nopic",
+      "name": "Русская Википедия — популярные статьи",
+      "description": "Подборка лучших статей русской Википедии без изображений. Разумный баланс полноты и размера.",
+      "size_mb": 1324,
+      "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_top_nopic_2026-10.zim",
+      "version": "2026-10"
+    },
+    {
+      "id": "ru-top-mini",
+      "name": "Русская Википедия — краткая",
+      "description": "Лучшие статьи русской Википедии в компактном формате без большинства изображений. Для быстрых справок.",
+      "size_mb": 232,
+      "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_top_mini_2026-10.zim",
+      "version": "2026-10"
+    },
+    {
+      "id": "ru-top-maxi",
+      "name": "Русская Википедия — популярные статьи с иллюстрациями",
+      "description": "Подборка лучших статей русской Википедии с полными иллюстрациями.",
+      "size_mb": 3601,
+      "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_top_maxi_2026-10.zim",
+      "version": "2026-10"
+    },
+    {
+      "id": "ru-all-mini",
+      "name": "Русская Википедия — полная (компактная)",
+      "description": "Все статьи русской Википедии в сжатом формате без большинства изображений.",
+      "size_mb": 5980,
+      "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_all_mini_2026-10.zim",
+      "version": "2026-10"
+    },
+    {
+      "id": "ru-all-nopic",
+      "name": "Русская Википедия — полная (без изображений)",
+      "description": "Все статьи русской Википедии без изображений. Полный офлайн-справочник.",
+      "size_mb": 18431,
+      "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_all_nopic_2026-10.zim",
+      "version": "2026-10"
+    },
+    {
+      "id": "ru-all-maxi",
+      "name": "Русская Википедия — полная (с иллюстрациями)",
+      "description": "Полная русская Википедия со всеми изображениями и медиа.",
+      "size_mb": 37106,
+      "url": "https://download.kiwix.org/zim/wikipedia/wikipedia_ru_all_maxi_2026-10.zim",
+      "version": "2026-10"
     },
     {
       "id": "top-mini",
