@@ -32,6 +32,20 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   /*
   |----------------------------------------------------------
+  | Источники каталога карт
+  |----------------------------------------------------------
+  | MAPS_SPEC_URL — необязательный URL каталога курируемых карт
+  | (collections/maps.json). По умолчанию — maps.json форка
+  | sarichanton/kovcheg в ветке ru-main.
+  | MAPS_ASSETS_REPO — необязательный GitHub-репозиторий формата
+  | owner/repo с готовыми PMTiles и базовыми ассетами. По умолчанию
+  | остаётся апстримовый Crosstalk-Solutions/project-nomad-maps.
+  */
+  MAPS_SPEC_URL: Env.schema.string.optional(),
+  MAPS_ASSETS_REPO: Env.schema.string.optional(),
+
+  /*
+  |----------------------------------------------------------
   | Variables for configuring storage paths
   |----------------------------------------------------------
   */

@@ -36,6 +36,7 @@ import {
 } from '../../constants/map_regions.js'
 import { CountriesService } from './countries_service.js'
 import { DEFAULT_MAP_LABEL_LANG, localizeMapStyle } from '../utils/map_style_lang.js'
+import { resolveMapsAssetsBaseUrl } from '../../constants/map_sources.js'
 import { execFile } from 'child_process'
 import { createHash, randomBytes } from 'crypto'
 import { tmpdir } from 'os'
@@ -100,7 +101,7 @@ export class MapService implements IMapService {
 
     const defaultTarFileURL = new URL(
       this.baseAssetsTarFile,
-      'https://github.com/Crosstalk-Solutions/project-nomad-maps/raw/refs/heads/master/'
+      resolveMapsAssetsBaseUrl(env.get('MAPS_ASSETS_REPO'))
     )
 
     const resolvedURL = url ? new URL(url) : defaultTarFileURL

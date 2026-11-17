@@ -1,6 +1,7 @@
 import axios from 'axios'
 import vine from '@vinejs/vine'
 import logger from '@adonisjs/core/services/logger'
+import env from '#start/env'
 import { DateTime } from 'luxon'
 import { join } from 'path'
 import CollectionManifest from '#models/collection_manifest'
@@ -10,6 +11,7 @@ import { QueueService } from './queue_service.js'
 import { RunDownloadJob } from '#jobs/run_download_job'
 import { zimCategoriesSpecSchema, mapsSpecSchema, wikipediaSpecSchema, creatorPacksSpecSchema } from '#validators/curated_collections'
 import { isGatedResource } from '../utils/hosted_content.js'
+import { resolveMapsSpecUrl } from '../../constants/map_sources.js'
 import {
   ensureDirectoryExists,
   listDirectoryContents,
@@ -28,11 +30,20 @@ import type {
   SpecTier,
 } from '../../types/collections.js'
 
-const SPEC_URLS: Record<ManifestType, string> = {
+// Каталог карт сюда не входит: его URL выбирается через MAPS_SPEC_URL.
+const SPEC_URLS: Record<Exclude<ManifestType, 'maps'>, string> = {
   zim_categories: 'https://raw.githubusercontent.com/Crosstalk-Solutions/project-nomad/refs/heads/main/collections/kiwix-categories.json',
-  maps: 'https://github.com/Crosstalk-Solutions/project-nomad/raw/refs/heads/main/collections/maps.json',
   wikipedia: 'https://raw.githubusercontent.com/Crosstalk-Solutions/project-nomad/refs/heads/main/collections/wikipedia.json',
   creator_packs: 'https://raw.githubusercontent.com/Crosstalk-Solutions/project-nomad/refs/heads/main/collections/creator-packs.json',
+}
+
+/**
+ * URL манифеста для типа контента. Каталог карт переопределяется через
+ * MAPS_SPEC_URL, чтобы правки форка доезжали до клиентов без апстрима.
+ */
+function getSpecUrl(type: ManifestType): string {
+  if (type === 'maps') return resolveMapsSpecUrl(env.get('MAPS_SPEC_URL'))
+  return SPEC_URLS[type]
 }
 
 const VALIDATORS: Record<ManifestType, any> = {
@@ -49,7 +60,7 @@ export class CollectionManifestService {
 
   async fetchAndCacheSpec(type: ManifestType): Promise<boolean> {
     try {
-      const response = await axios.get(SPEC_URLS[type], { timeout: 15000 })
+      const response = await axios.get(getSpecUrl(type), { timeout: 15000 })
 
       const validated = await vine.validate({
         schema: VALIDATORS[type],

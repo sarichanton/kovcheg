@@ -2,9 +2,11 @@ import axios from 'axios'
 import { XMLParser } from 'fast-xml-parser'
 import { DateTime } from 'luxon'
 import logger from '@adonisjs/core/services/logger'
+import env from '#start/env'
 import InstalledResource from '#models/installed_resource'
 import { isRawListRemoteZimFilesResponse } from '../../util/zim.js'
 import { KIWIX_CATALOG_BASE_URL } from '../../constants/kiwix.js'
+import { resolveMapsUpdateCatalogUrl } from '../../constants/map_sources.js'
 
 /**
  * Local, in-process freshness check for installed content (Kiwix ZIM files +
@@ -24,9 +26,6 @@ import { KIWIX_CATALOG_BASE_URL } from '../../constants/kiwix.js'
  * match in the catalog can never resolve to the wrong book. Parsing is fully
  * defensive — a malformed entry is skipped, never thrown.
  */
-
-const GITHUB_PMTILES_URL =
-  'https://api.github.com/repos/Crosstalk-Solutions/project-nomad-maps/contents/pmtiles'
 
 const CATALOG_TIMEOUT_MS = 15000
 /** Concurrent ZIM catalog lookups — keep small to avoid hammering the mirror. */
@@ -256,7 +255,8 @@ export class KiwixCatalogService {
   // ── Map internals ────────────────────────────────────────────────────────────
 
   private async fetchMapListing(): Promise<GithubContentEntry[]> {
-    const res = await axios.get(GITHUB_PMTILES_URL, {
+    const catalogUrl = resolveMapsUpdateCatalogUrl(env.get('MAPS_ASSETS_REPO'))
+    const res = await axios.get(catalogUrl, {
       headers: { Accept: 'application/vnd.github+json' },
       timeout: CATALOG_TIMEOUT_MS,
     })
