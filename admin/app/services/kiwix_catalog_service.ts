@@ -6,7 +6,7 @@ import env from '#start/env'
 import InstalledResource from '#models/installed_resource'
 import { isRawListRemoteZimFilesResponse } from '../../util/zim.js'
 import { KIWIX_CATALOG_BASE_URL } from '../../constants/kiwix.js'
-import { resolveMapsUpdateCatalogUrl } from '../../constants/map_sources.js'
+import { resolveMapsUpdateCatalogUrl } from '../../constants/collection_sources.js'
 
 /**
  * Local, in-process freshness check for installed content (Kiwix ZIM files +

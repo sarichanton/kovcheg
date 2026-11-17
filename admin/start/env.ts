@@ -32,15 +32,19 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   /*
   |----------------------------------------------------------
-  | Источники каталога карт
+  | Источники каталогов коллекций
   |----------------------------------------------------------
-  | MAPS_SPEC_URL — необязательный URL каталога курируемых карт
-  | (collections/maps.json). По умолчанию — maps.json форка
-  | sarichanton/kovcheg в ветке ru-main.
+  | COLLECTIONS_BASE_URL — необязательный базовый URL каталогов
+  | коллекций: kiwix-categories.json, wikipedia.json,
+  | creator-packs.json и maps.json. По умолчанию — каталог
+  | collections/ форка sarichanton/kovcheg в ветке ru-main.
+  | MAPS_SPEC_URL имеет приоритет для maps.json; если он не задан,
+  | maps.json берётся из COLLECTIONS_BASE_URL.
   | MAPS_ASSETS_REPO — необязательный GitHub-репозиторий формата
   | owner/repo с готовыми PMTiles и базовыми ассетами. По умолчанию
   | остаётся апстримовый Crosstalk-Solutions/project-nomad-maps.
   */
+  COLLECTIONS_BASE_URL: Env.schema.string.optional(),
   MAPS_SPEC_URL: Env.schema.string.optional(),
   MAPS_ASSETS_REPO: Env.schema.string.optional(),
 

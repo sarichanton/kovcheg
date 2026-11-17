@@ -11,7 +11,7 @@ import { QueueService } from './queue_service.js'
 import { RunDownloadJob } from '#jobs/run_download_job'
 import { zimCategoriesSpecSchema, mapsSpecSchema, wikipediaSpecSchema, creatorPacksSpecSchema } from '#validators/curated_collections'
 import { isGatedResource } from '../utils/hosted_content.js'
-import { resolveMapsSpecUrl } from '../../constants/map_sources.js'
+import { resolveCollectionSpecUrl } from '../../constants/collection_sources.js'
 import {
   ensureDirectoryExists,
   listDirectoryContents,
@@ -30,20 +30,16 @@ import type {
   SpecTier,
 } from '../../types/collections.js'
 
-// Каталог карт сюда не входит: его URL выбирается через MAPS_SPEC_URL.
-const SPEC_URLS: Record<Exclude<ManifestType, 'maps'>, string> = {
-  zim_categories: 'https://raw.githubusercontent.com/Crosstalk-Solutions/project-nomad/refs/heads/main/collections/kiwix-categories.json',
-  wikipedia: 'https://raw.githubusercontent.com/Crosstalk-Solutions/project-nomad/refs/heads/main/collections/wikipedia.json',
-  creator_packs: 'https://raw.githubusercontent.com/Crosstalk-Solutions/project-nomad/refs/heads/main/collections/creator-packs.json',
-}
-
 /**
- * URL манифеста для типа контента. Каталог карт переопределяется через
- * MAPS_SPEC_URL, чтобы правки форка доезжали до клиентов без апстрима.
+ * URL манифеста для типа контента. Все каталоги строятся от
+ * COLLECTIONS_BASE_URL; для maps.json приоритет у MAPS_SPEC_URL, чтобы правки
+ * форка доезжали до клиентов без апстрима.
  */
 function getSpecUrl(type: ManifestType): string {
-  if (type === 'maps') return resolveMapsSpecUrl(env.get('MAPS_SPEC_URL'))
-  return SPEC_URLS[type]
+  return resolveCollectionSpecUrl(type, {
+    collectionsBaseUrl: env.get('COLLECTIONS_BASE_URL'),
+    mapsSpecUrl: env.get('MAPS_SPEC_URL'),
+  })
 }
 
 const VALIDATORS: Record<ManifestType, any> = {

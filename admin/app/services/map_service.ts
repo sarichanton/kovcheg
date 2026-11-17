@@ -36,7 +36,7 @@ import {
 } from '../../constants/map_regions.js'
 import { CountriesService } from './countries_service.js'
 import { DEFAULT_MAP_LABEL_LANG, localizeMapStyle } from '../utils/map_style_lang.js'
-import { resolveMapsAssetsBaseUrl } from '../../constants/map_sources.js'
+import { resolveMapsAssetsBaseUrl } from '../../constants/collection_sources.js'
 import { execFile } from 'child_process'
 import { createHash, randomBytes } from 'crypto'
 import { tmpdir } from 'os'
