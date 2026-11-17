@@ -109,7 +109,7 @@ export function hasThinkTagLeak(answer: string): boolean {
 /**
  * Loose markdown check: a header, a list, emphasis, a table, or a code fence.
  *
- * Deliberately loose. SYSTEM_PROMPTS.default asks for markdown "for
+ * Deliberately loose. The default formatting prompt asks for markdown "for
  * readability", not for a specific structure, so requiring headers would fail
  * perfectly good one-sentence answers. This only catches a model that has
  * stopped formatting entirely.

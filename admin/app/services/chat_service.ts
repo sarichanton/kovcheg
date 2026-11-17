@@ -5,7 +5,7 @@ import logger from '@adonisjs/core/services/logger'
 import { DateTime } from 'luxon'
 import { inject } from '@adonisjs/core'
 import { OllamaService } from './ollama_service.js'
-import { SYSTEM_PROMPTS } from '../../constants/ollama.js'
+import { getSystemPrompts } from '../../constants/prompts.js'
 import { toTitleCase } from '../utils/misc.js'
 import { resolveTasksModel } from '../utils/tasks_model.js'
 import {
@@ -93,13 +93,14 @@ export class ChatService {
       // it at the source; `thinkingCapable` is what lets the compat transport pick
       // reasoning_effort:'none' rather than sending nothing. Memoized per model name.
       const thinkingCapable = await this.ollamaService.checkModelHasThinking(model)
+      const prompts = getSystemPrompts()
 
       const response = await this.ollamaService.chat({
         model,
         messages: [
           {
             role: 'user',
-            content: SYSTEM_PROMPTS.chat_suggestions,
+            content: prompts.chat_suggestions,
           }
         ],
         stream: false,
@@ -326,11 +327,12 @@ export class ChatService {
 
       // Naming a chat needs no reasoning; see the note in getChatSuggestions.
       const thinkingCapable = await this.ollamaService.checkModelHasThinking(titleModel)
+      const prompts = getSystemPrompts()
 
       const response = await this.ollamaService.chat({
         model: titleModel,
         messages: [
-          { role: 'system', content: SYSTEM_PROMPTS.title_generation },
+          { role: 'system', content: prompts.title_generation },
           { role: 'user', content: userMessage },
           { role: 'assistant', content: assistantMessage },
         ],

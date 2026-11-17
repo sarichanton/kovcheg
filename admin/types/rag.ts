@@ -1,5 +1,6 @@
 import type { OllamaChatMessage } from './ollama.js'
 import type { BudgetTrace, RagPlacement } from '../app/utils/context_budget.js'
+import type { PromptLang } from '../constants/prompts.js'
 
 export type EmbedJobWithProgress = {
   jobId: string
@@ -128,6 +129,9 @@ export type PipelineOptions = {
    *  user's `rag.relevanceCheck` setting; the eval harness passes an explicit
    *  value for the same reason it pins `minFinalScore`. */
   relevanceCheckModel?: string | null
+  /** Language of the system prompts. Unset resolves `AI_PROMPT_LANG`; the eval
+   *  harness pins `en` so its scores stay comparable with recorded baselines. */
+  promptLang?: PromptLang
 }
 
 /**

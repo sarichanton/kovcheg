@@ -138,6 +138,9 @@ const SYSBENCH_CONTAINER_NAME = 'nomad_benchmark_sysbench'
 // re-baselines REFERENCE_SCORES_V2.ai_tokens_per_second — re-measure on the
 // Reference Build (NOMAD6) before shipping.
 const AI_BENCHMARK_MODEL = 'llama3.1:8b'
+// Fixed English workload, deliberately excluded from AI_PROMPT_LANG: the
+// throughput/TTFT numbers are compared against REFERENCE_SCORES_V2 and other
+// machines, so the prompt text must not change with the UI language.
 const AI_BENCHMARK_PROMPT = 'Explain recursion in programming in exactly 100 words.'
 // Cap generation so the workload is bounded and comparable across machines rather
 // than relying on the model honoring "100 words". ~100-150 tokens is plenty for a

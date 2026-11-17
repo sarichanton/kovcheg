@@ -12,8 +12,13 @@ import {
   RAG_DEFAULT_TOP_K,
   RAG_PLACEMENT,
   QUERY_REWRITE_MAX_TOKENS,
-  SYSTEM_PROMPTS,
 } from '../../constants/ollama.js'
+import {
+  getSystemPrompts,
+  resolvePromptLang,
+  REWRITE_LABELS,
+  type PromptLang,
+} from '../../constants/prompts.js'
 import type { OllamaChatMessage } from '../../types/ollama.js'
 import type { PipelineOptions, PipelineTrace, RetrievalFloorStats, RetrievedChunk } from '../../types/rag.js'
 import { planPrompt } from '../utils/context_budget.js'
@@ -59,6 +64,9 @@ export class RagPipelineService {
     model: string,
     opts: PipelineOptions = {}
   ): Promise<PipelineTrace> {
+    const promptLang: PromptLang = opts.promptLang ?? resolvePromptLang()
+    const prompts = getSystemPrompts(promptLang)
+
     // Split the caller's conversation into the pieces the budget planner needs.
     // Caller-supplied system messages are treated as stable prefix material and
     // stay in front of everything, as before.
@@ -70,7 +78,7 @@ export class RagPipelineService {
     // Default formatting prompt, only when the caller supplied no system message.
     if (callerSystem.length === 0) {
       logger.debug('[RagPipeline] Injecting system prompt')
-      systemBlocks.push({ role: 'system', content: SYSTEM_PROMPTS.default })
+      systemBlocks.push({ role: 'system', content: prompts.default })
     }
 
     // The user-managed NOMAD.md goes in front of the formatting prompt so the
@@ -172,7 +180,12 @@ export class RagPipelineService {
               ? opts.relevanceCheckModel
               : await this.relevanceJudge.resolveModel(model)
           if (checkModel) {
-            const verdict = await this.relevanceJudge.judge(retrievalQuery, relevantDocs, checkModel)
+            const verdict = await this.relevanceJudge.judge(
+              retrievalQuery,
+              relevantDocs,
+              checkModel,
+              promptLang
+            )
             relevantDocs = verdict.kept
             trace.retrieved = relevantDocs
             trace.relevanceCheckModel = checkModel
@@ -203,7 +216,7 @@ export class RagPipelineService {
       query,
       ragChunks: candidateDocs,
       renderRagBlock: (chunks) =>
-        SYSTEM_PROMPTS.rag_context(buildContextBlock(chunks as RetrievedChunk[])),
+        prompts.rag_context(buildContextBlock(chunks as RetrievedChunk[])),
       contextWindow,
       ratio,
       ragPlacement: opts.ragPlacement ?? RAG_PLACEMENT,
@@ -240,6 +253,9 @@ export class RagPipelineService {
     model: string,
     opts: PipelineOptions
   ): Promise<{ query: string | null; didRewrite: boolean }> {
+    const promptLang: PromptLang = opts.promptLang ?? resolvePromptLang()
+    const prompts = getSystemPrompts(promptLang)
+    const labels = REWRITE_LABELS[promptLang]
     const lastUserMessage = [...messages].reverse().find((msg) => msg.role === 'user')
 
     try {
@@ -275,7 +291,7 @@ export class RagPipelineService {
 
       const conversationContext = recentMessages
         .map((msg) => {
-          const role = msg.role === 'user' ? 'User' : 'Assistant'
+          const role = msg.role === 'user' ? labels.user : labels.assistant
           // Truncate assistant messages to keep the rewrite prompt manageable.
           const content =
             msg.role === 'assistant'
@@ -304,10 +320,10 @@ export class RagPipelineService {
       const response = await this.ollamaService.chat({
         model: rewriteModel,
         messages: [
-          { role: 'system', content: SYSTEM_PROMPTS.query_rewrite },
+          { role: 'system', content: prompts.query_rewrite },
           {
             role: 'user',
-            content: `Conversation:\n${conversationContext}\n\nRewritten Query:`,
+            content: `${labels.conversation}:\n${conversationContext}\n\n${labels.rewrittenQuery}:`,
           },
         ],
         // A rewrite is a short, mechanical transformation. Cap it so a chatty

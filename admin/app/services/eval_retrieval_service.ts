@@ -138,7 +138,15 @@ export class EvalRetrievalService {
       )
 
       if (options.judgeModel && docs.length > 0) {
-        const verdict = await this.judgeService.judge(golden.query, docs, options.judgeModel)
+        // English prompt, like the goldens and the generation baselines. The
+        // judge is part of the measurement, not of production chat, so it must
+        // not move when AI_PROMPT_LANG changes.
+        const verdict = await this.judgeService.judge(
+          golden.query,
+          docs,
+          options.judgeModel,
+          'en'
+        )
         judgeMs.push(verdict.ms)
         if (!verdict.judged) judgeFailures++
         judgeRejected += verdict.rejected

@@ -299,6 +299,10 @@ export class EvalGenerationService {
       // Pinned off rather than read from `rag.relevanceCheck`, for the same
       // reason as minFinalScore. eval:retrieval --judge-model measures it.
       relevanceCheckModel: null,
+      // The goldens, refusal/leakage regexes and baselines are English. Pinning
+      // the prompt language keeps a Russian production deployment from silently
+      // moving every generation score; `eval:generation` is a fixed workload.
+      promptLang: 'en',
     }
 
     if (options.mode === 'oracle') {

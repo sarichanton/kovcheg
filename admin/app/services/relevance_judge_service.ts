@@ -2,7 +2,8 @@ import { OllamaService } from '#services/ollama_service'
 import { inject } from '@adonisjs/core'
 import logger from '@adonisjs/core/services/logger'
 import KVStore from '#models/kv_store'
-import { RELEVANCE_CHECK_MAX_TOKENS, SYSTEM_PROMPTS } from '../../constants/ollama.js'
+import { RELEVANCE_CHECK_MAX_TOKENS } from '../../constants/ollama.js'
+import { getSystemPrompts, type PromptLang } from '../../constants/prompts.js'
 import type { RetrievedChunk } from '../../types/rag.js'
 import {
   buildJudgeInput,
@@ -54,8 +55,14 @@ export class RelevanceJudgeService {
     return resolveTasksModel(this.ollamaService, chatModel, undefined, '[RAG]')
   }
 
-  async judge(question: string, chunks: RetrievedChunk[], model: string): Promise<JudgeResult> {
+  async judge(
+    question: string,
+    chunks: RetrievedChunk[],
+    model: string,
+    promptLang?: PromptLang
+  ): Promise<JudgeResult> {
     const started = Date.now()
+    const prompts = getSystemPrompts(promptLang)
     const unjudged = (): JudgeResult => ({
       kept: chunks,
       rejected: 0,
@@ -69,7 +76,7 @@ export class RelevanceJudgeService {
       const response = await this.ollamaService.chat({
         model,
         messages: [
-          { role: 'system', content: SYSTEM_PROMPTS.relevance_check },
+          { role: 'system', content: prompts.relevance_check },
           {
             role: 'user',
             content: buildJudgeInput(
