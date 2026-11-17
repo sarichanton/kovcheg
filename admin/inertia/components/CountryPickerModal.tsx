@@ -41,6 +41,9 @@ export type CountryPickerModalProps = Omit<
 // to country codes, so we skip them here.
 const SINGLE_COUNTRY_FILENAME_RE = /^([a-z]{2})_[\w-]+_z\d+\.pmtiles$/
 
+/** Prefer the Russian name, but stay compatible with older API payloads. */
+const countryLabel = (country: Country) => country.nameRu || country.name
+
 const CountryPickerModal: React.FC<CountryPickerModalProps> = ({
   onDownloadStart,
   installedFilenames = [],
@@ -71,7 +74,10 @@ const CountryPickerModal: React.FC<CountryPickerModalProps> = ({
     const q = search.trim().toLowerCase()
     const filtered = q
       ? countries.filter(
-          (c) => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)
+          (c) =>
+            c.name.toLowerCase().includes(q) ||
+            (c.nameRu ?? '').toLowerCase().includes(q) ||
+            c.code.toLowerCase().includes(q)
         )
       : countries
 
@@ -297,7 +303,7 @@ const CountryPickerModal: React.FC<CountryPickerModalProps> = ({
                           >
                             {isSelected && <IconCheck className="w-3 h-3 text-white" />}
                           </span>
-                          <span className="flex-1 text-text-primary">{country.name}</span>
+                          <span className="flex-1 text-text-primary">{countryLabel(country)}</span>
                           {isInstalled && (
                             <span
                               className="text-[10px] uppercase tracking-wide font-semibold px-1.5 py-0.5 rounded bg-desert-green/15 text-desert-green border border-desert-green/30"
@@ -330,12 +336,12 @@ const CountryPickerModal: React.FC<CountryPickerModalProps> = ({
                   key={country.code}
                   className="inline-flex items-center gap-1 px-2 py-1 rounded bg-desert-green text-white text-xs"
                 >
-                  {country.name}
+                  {countryLabel(country)}
                   <button
                     type="button"
                     onClick={() => toggleCountry(country.code)}
                     className="hover:bg-white/20 rounded cursor-pointer"
-                    aria-label={`Remove ${country.name}`}
+                    aria-label={`Remove ${countryLabel(country)}`}
                   >
                     <IconX className="w-3 h-3" />
                   </button>

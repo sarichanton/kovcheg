@@ -35,6 +35,7 @@ import {
   buildPmtilesExtractArgs,
 } from '../../constants/map_regions.js'
 import { CountriesService } from './countries_service.js'
+import { DEFAULT_MAP_LABEL_LANG, localizeMapStyle } from '../utils/map_style_lang.js'
 import { execFile } from 'child_process'
 import { createHash, randomBytes } from 'crypto'
 import { tmpdir } from 'os'
@@ -357,6 +358,13 @@ export class MapService implements IMapService {
 
     const rawStyles = JSON.parse(baseStyle.toString()) as BaseStylesFile
 
+    // Offline map labels are English-first upstream. Rewrite the text-field
+    // expressions so Russian names win when the tiles carry name:ru.
+    const localizedStyles = localizeMapStyle(
+      rawStyles,
+      env.get('MAP_LABEL_LANG') ?? DEFAULT_MAP_LABEL_LANG
+    )
+
     const regions = (await this.listRegions()).files
 
     /** If we have the host, use it to build public URLs, otherwise we'll fallback to defaults
@@ -369,7 +377,7 @@ export class MapService implements IMapService {
     const baseUrl = this.getPublicFileBaseUrl(host, this.basemapsAssetsDir, protocol)
 
     const styles = await this.generateStylesFile(
-      rawStyles,
+      localizedStyles,
       sources,
       urlJoin(baseUrl, 'sprites/v4/light'),
       urlJoin(baseUrl, 'fonts/{fontstack}/{range}.pbf')

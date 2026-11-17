@@ -117,10 +117,12 @@ export class CountriesService {
       const continent = typeof p.CONTINENT === 'string' ? p.CONTINENT : 'Other'
       if (continent === 'Antarctica' || continent === 'Seven seas (open ocean)') continue
 
+      const name = typeof p.NAME === 'string' ? p.NAME : code
       const country: Country = {
         code,
         code3: resolveIso3(p) ?? code,
-        name: typeof p.NAME === 'string' ? p.NAME : code,
+        name,
+        nameRu: resolveRussianName(p, name),
         continent,
         subregion: typeof p.SUBREGION === 'string' ? p.SUBREGION : continent,
         population: typeof p.POP_EST === 'number' ? p.POP_EST : 0,
@@ -304,5 +306,12 @@ function resolveIso3(p: Record<string, any>): string | null {
   const adm = typeof p.ADM0_A3 === 'string' ? p.ADM0_A3 : null
   if (adm && adm !== '-99') return adm.toUpperCase()
   return null
+}
+
+/** Russian name from Natural Earth, falling back to the English `NAME`. */
+function resolveRussianName(p: Record<string, any>, fallback: string): string {
+  const ru = typeof p.NAME_RU === 'string' ? p.NAME_RU.trim() : ''
+  if (ru && ru !== '-99') return ru
+  return fallback
 }
 

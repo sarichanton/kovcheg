@@ -23,6 +23,15 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   /*
   |----------------------------------------------------------
+  | Offline map label language
+  |----------------------------------------------------------
+  | "ru" (default) prefers name:ru, then name, then name:en.
+  | "en" keeps the upstream (English-first) style untouched.
+  */
+  MAP_LABEL_LANG: Env.schema.enum.optional(['ru', 'en'] as const),
+
+  /*
+  |----------------------------------------------------------
   | Variables for configuring storage paths
   |----------------------------------------------------------
   */
