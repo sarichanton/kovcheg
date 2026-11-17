@@ -168,17 +168,16 @@ export default function EasySetupWizard(props: {
     refetchOnWindowFocus: false,
   })
 
-  const { data: recommendedModels, isLoading: isLoadingRecommendedModels } = useQuery({
+  const { data: recommendedModelsData, isLoading: isLoadingRecommendedModels } = useQuery({
     queryKey: ['recommended-ollama-models'],
     queryFn: async () => {
-      const res = await api.getAvailableModels({ recommendedOnly: true })
-      if (!res) {
-        return []
-      }
-      return res.models
+      return await api.getAvailableModels({ recommendedOnly: true })
     },
     refetchOnWindowFocus: false,
   })
+
+  const recommendedModels = recommendedModelsData?.models
+  const recommendedTier = recommendedModelsData?.recommendedTier
 
   // Fetch Wikipedia options and current state
   const { data: wikipediaState, isLoading: isLoadingWikipedia } = useQuery({
@@ -1071,6 +1070,11 @@ export default function EasySetupWizard(props: {
           <div>
             <h3 className="text-xl font-semibold text-text-primary">AI Models</h3>
             <p className="text-sm text-text-muted">Select models to download for offline AI</p>
+            {recommendedTier && (
+              <p className="text-sm text-desert-green mt-1">
+                Подобрано для: {recommendedTier.label}
+              </p>
+            )}
           </div>
         </div>
         {remoteOllamaEnabled && remoteOllamaUrl ? (

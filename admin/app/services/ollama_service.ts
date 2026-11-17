@@ -6,8 +6,10 @@ import { Ollama } from 'ollama'
 import { ThinkTagSplitter, normalizeNonStreamed } from '../utils/think_stream.js'
 import { readContextLength, readModelfileNumCtx } from '../utils/context_window.js'
 import { compatSamplerParams, nativeSamplerOptions, readModelfileSamplers } from '../utils/sampler.js'
-import { NomadOllamaModel, SamplerProfile } from '../../types/ollama.js'
+import { NomadOllamaModel, RecommendedOllamaTier, SamplerProfile } from '../../types/ollama.js'
 import { EMBEDDING_MODEL_NAME, FALLBACK_RECOMMENDED_OLLAMA_MODELS } from '../../constants/ollama.js'
+import { OLLAMA_RU_TIERS, pickTierByVram, recommendedModelsForTier } from '../../constants/ollama_ru.js'
+import os from 'node:os'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import logger from '@adonisjs/core/services/logger'
@@ -1304,6 +1306,57 @@ export class OllamaService {
     }
   }
 
+  /**
+   * Which hardware tier the recommended models should come from.
+   *
+   * VRAM comes from the same probe Settings > System uses: Ollama's startup
+   * "inference compute" line. When no local GPU is reported, an external Ollama
+   * is asked what its loaded model actually occupies. Anything undetermined
+   * falls back to the CPU tier — the recommendation has to be runnable, and an
+   * unknown GPU is not evidence that one exists.
+   *
+   * The imports are dynamic on purpose: OllamaService is imported at module
+   * scope by lightweight unit tests that have no Docker or Adonis container,
+   * and this probe only runs on the recommended-models request.
+   */
+  private async _recommendedTierForHost(): Promise<RecommendedOllamaTier> {
+    const ramMiB = Math.round(os.totalmem() / (1024 * 1024))
+    let vramMiB: number | null = null
+
+    try {
+      const [{ SystemService }, { DockerService }] = await Promise.all([
+        import('./system_service.js'),
+        import('./docker_service.js'),
+      ])
+      const systemService = new SystemService(new DockerService())
+
+      const compute = await systemService.getOllamaInferenceComputeFromLogs()
+      vramMiB = compute?.vramMiB || null
+
+      if (!vramMiB) {
+        const external = await systemService.getExternalOllamaGpuInfo()
+        const externalVram = (external ?? []).reduce(
+          (largest, gpu) => Math.max(largest, gpu.vram || 0),
+          0
+        )
+        if (externalVram > 0) vramMiB = externalVram
+      }
+    } catch (error) {
+      logger.warn(
+        `[OllamaService] Could not detect VRAM for model recommendations; using CPU tier: ${
+          error instanceof Error ? error.message : error
+        }`
+      )
+    }
+
+    const tierId = pickTierByVram(vramMiB, ramMiB)
+    logger.info(
+      `[OllamaService] Recommended models tier "${tierId}" ` +
+        `(VRAM ${vramMiB ?? 'unknown'} MiB, RAM ${ramMiB} MiB)`
+    )
+    return { id: tierId, label: OLLAMA_RU_TIERS[tierId].label }
+  }
+
   async getAvailableModels(
     {
       sort,
@@ -1323,7 +1376,11 @@ export class OllamaService {
       query: null,
       limit: 15,
     }
-  ): Promise<{ models: NomadOllamaModel[]; hasMore: boolean } | null> {
+  ): Promise<{
+    models: NomadOllamaModel[]
+    hasMore: boolean
+    recommendedTier?: RecommendedOllamaTier
+  } | null> {
     try {
       const models = await this.retrieveAndRefreshModels(sort, force)
       if (!models || models.length === 0) {
@@ -1333,6 +1390,14 @@ export class OllamaService {
         return {
           models: FALLBACK_RECOMMENDED_OLLAMA_MODELS,
           hasMore: false,
+          ...(recommendedOnly
+            ? {
+                recommendedTier: {
+                  id: 'cpu' as const,
+                  label: OLLAMA_RU_TIERS.cpu.label,
+                },
+              }
+            : {}),
         }
       }
 
@@ -1344,27 +1409,20 @@ export class OllamaService {
         }
       }
 
-      const sortedByPulls = sort === 'pulls' ? models : this.sortModels(models, 'pulls')
-      const firstThree = sortedByPulls.slice(0, 3)
-
-      const recommendedModels = firstThree.map((model) => {
-        return {
-          ...model,
-          tags: model.tags && model.tags.length > 0 ? [model.tags[0]] : [],
-        }
-      })
+      // Recommended mode ignores the remote catalogue's pull ordering: the tier
+      // is chosen from this host's hardware, and the registry already carries
+      // the tag each model should be downloaded with.
+      const recommendedTier = await this._recommendedTierForHost()
+      let recommendedModels = recommendedModelsForTier(recommendedTier.id)
 
       if (query) {
-        const filteredRecommendedModels = this.fuseSearchModels(recommendedModels, query)
-        return {
-          models: filteredRecommendedModels,
-          hasMore: filteredRecommendedModels.length > (limit || 15),
-        }
+        recommendedModels = this.fuseSearchModels(recommendedModels, query)
       }
 
       return {
         models: recommendedModels,
         hasMore: recommendedModels.length > (limit || 15),
+        recommendedTier,
       }
     } catch (error) {
       logger.error(

@@ -12,7 +12,7 @@ import type { Country, CountryCode, CountryGroup, MapExtractPreflight } from '..
 import { EmbedJobWithProgress, FileWarningsResult, StoredFileInfo } from '../../types/rag'
 import type { CategoryWithStatus, CollectionWithStatus, ContentUpdateCheckResult, CreatorPackWithStatus, ResourceUpdateInfo } from '../../types/collections'
 import { catchInternal } from './util'
-import { NomadChatResponse, NomadInstalledModel, NomadOllamaModel, OllamaChatRequest } from '../../types/ollama'
+import { NomadChatResponse, NomadInstalledModel, NomadOllamaModel, OllamaChatRequest, RecommendedOllamaTier } from '../../types/ollama'
 import BenchmarkResult from '#models/benchmark_result'
 import { BenchmarkType, RunBenchmarkResponse, SubmitBenchmarkResponse, UpdateBuilderTagResponse } from '../../types/benchmark'
 import type { CreateMapMarkerPayload, MapMarkerResponse, UpdateMapMarkerPayload } from '../../types/maps'
@@ -330,6 +330,7 @@ class API {
       const response = await this.client.get<{
         models: NomadOllamaModel[]
         hasMore: boolean
+        recommendedTier?: RecommendedOllamaTier
       }>('/ollama/models', {
         params: { sort: 'pulls', ...params },
       })

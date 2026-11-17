@@ -17,6 +17,18 @@ export type NomadOllamaModelTag = {
   thinking: boolean
 }
 
+/**
+ * Hardware buckets for NOMAD's Russian-language Ollama recommendations. Kept in
+ * the shared types module because both the server registry and the Inertia
+ * client name them.
+ */
+export type OllamaRuTierId = 'cpu' | 'gpu_6gb' | 'gpu_8gb' | 'gpu_16gb'
+
+export type RecommendedOllamaTier = {
+  id: OllamaRuTierId
+  label: string
+}
+
 export type NomadOllamaModelAPIResponse = {
   success: boolean
   message: string
