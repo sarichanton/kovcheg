@@ -86,6 +86,11 @@ const CountryPickerModal: React.FC<CountryPickerModalProps> = ({
       if (!buckets[country.continent]) buckets[country.continent] = []
       buckets[country.continent].push(country)
     }
+    // Sort each group (and therefore the filtered search results) by the
+    // displayed Russian label; the group order itself is left untouched.
+    for (const list of Object.values(buckets)) {
+      list.sort((a, b) => countryLabel(a).localeCompare(countryLabel(b), 'ru'))
+    }
     return Object.entries(buckets).sort(([a], [b]) => a.localeCompare(b))
   }, [countries, search])
 
