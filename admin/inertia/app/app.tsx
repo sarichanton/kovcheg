@@ -12,9 +12,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import NotificationsProvider from '~/providers/NotificationProvider'
 import { ThemeProvider } from '~/providers/ThemeProvider'
+import { I18nProvider } from '~/i18n/I18nProvider'
 import { UsePageProps } from '../../types/system'
 
-const appName = import.meta.env.VITE_APP_NAME || 'Project NOMAD'
+const appName = import.meta.env.VITE_APP_NAME || 'Ковчег'
 const queryClient = new QueryClient()
 
 // Patch the global crypto object for non-HTTPS/localhost contexts
@@ -39,16 +40,18 @@ createInertiaApp({
     const showDevtools = ['development', 'staging'].includes(environment)
     createRoot(el).render(
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <TransmitProvider baseUrl={window.location.origin} enableLogging={environment === 'development'}>
-            <NotificationsProvider>
-              <ModalsProvider>
-                <App {...props} />
-                {showDevtools && <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' />}
-              </ModalsProvider>
-            </NotificationsProvider>
-          </TransmitProvider>
-        </ThemeProvider>
+        <I18nProvider>
+          <ThemeProvider>
+            <TransmitProvider baseUrl={window.location.origin} enableLogging={environment === 'development'}>
+              <NotificationsProvider>
+                <ModalsProvider>
+                  <App {...props} />
+                  {showDevtools && <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left' />}
+                </ModalsProvider>
+              </NotificationsProvider>
+            </TransmitProvider>
+          </ThemeProvider>
+        </I18nProvider>
       </QueryClientProvider>
     )
   },
