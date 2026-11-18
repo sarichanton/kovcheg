@@ -20,6 +20,7 @@ import CoordinateOverlay from './CoordinateOverlay'
 import ViewMapMarkerPopup from './ViewMapMarkerPopup'
 import MapMarkerFormPopup from './MapMarkerFormPopup'
 import ScaleUnitToggle from './ScaleUnitSelector'
+import { useT } from '~/i18n/I18nProvider'
 
 type ScaleUnit = 'imperial' | 'metric' | 'nautical'
 
@@ -135,6 +136,7 @@ export default function MapComponent({
                                        isHoveringUI = false,
                                        showCoordinatesEnabled = true,
                                      }: MapComponentProps) {
+  const { t } = useT()
   const mapRef = useRef<MapRef>(null)
   const animationFrameRef = useRef<number | null>(null)
   const handledMapCommandIdRef = useRef<number | null>(null)
@@ -188,8 +190,8 @@ export default function MapComponent({
 
   const confirmDiscardMarkerChanges = useCallback(() => {
     if (!hasUnsavedMarkerChanges) return true
-    return window.confirm('Discard unsaved marker changes?')
-  }, [hasUnsavedMarkerChanges])
+    return window.confirm(t('maps.discardMarkerChanges'))
+  }, [hasUnsavedMarkerChanges, t])
 
   useEffect(() => {
     const protocol = new Protocol()
@@ -341,6 +343,29 @@ export default function MapComponent({
     ? markers.find((marker) => marker.id === selectedMarkerId && isValidMarkerCoordinate(marker))
     : null
 
+  // MapLibre builds control tooltips and ARIA labels from this table. react-map-gl
+  // forwards unknown props to the MapLibre constructor, where `locale` is read.
+  const mapLocale = {
+    'AttributionControl.ToggleAttribution': t('maps.mapLibre.attributionToggle'),
+    'AttributionControl.MapFeedback': t('maps.mapLibre.mapFeedback'),
+    'FullscreenControl.Enter': t('maps.mapLibre.fullscreenEnter'),
+    'FullscreenControl.Exit': t('maps.mapLibre.fullscreenExit'),
+    'GeolocateControl.FindMyLocation': t('maps.mapLibre.findMyLocation'),
+    'GeolocateControl.LocationNotAvailable': t('maps.mapLibre.locationNotAvailable'),
+    'LogoControl.Title': t('maps.mapLibre.logoTitle'),
+    'Map.Title': t('maps.mapLibre.mapTitle'),
+    'Marker.Title': t('maps.mapLibre.markerTitle'),
+    'NavigationControl.ResetBearing': t('maps.mapLibre.resetBearing'),
+    'NavigationControl.ZoomIn': t('maps.mapLibre.zoomIn'),
+    'NavigationControl.ZoomOut': t('maps.mapLibre.zoomOut'),
+    'Popup.Close': t('maps.mapLibre.popupClose'),
+    'ScaleControl.Feet': t('maps.mapLibre.feet'),
+    'ScaleControl.Meters': t('maps.mapLibre.meters'),
+    'ScaleControl.Kilometers': t('maps.mapLibre.kilometers'),
+    'ScaleControl.Miles': t('maps.mapLibre.miles'),
+    'ScaleControl.NauticalMiles': t('maps.mapLibre.nauticalMiles'),
+  }
+
   return (
     <MapProvider>
       <div
@@ -368,6 +393,7 @@ export default function MapComponent({
           cursor={isDraggingMap ? 'grabbing' : 'crosshair'}
           mapStyle={`${window.location.protocol}//${window.location.hostname}:${window.location.port}/api/maps/styles`}
           mapLib={maplibregl}
+          {...{ locale: mapLocale }}
           initialViewState={initialViewState}
           onMoveEnd={(e) => {
             // Persist the view so a refresh restores where the user was, not the default.

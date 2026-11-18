@@ -1,3 +1,5 @@
+import { useT } from '~/i18n/I18nProvider'
+
 type ScaleUnit = 'imperial' | 'metric' | 'nautical'
 
 type ScaleUnitSelectorProps = {
@@ -11,6 +13,7 @@ export default function ScaleUnitSelector({
                                           onChange,
                                           onMouseEnter,
                                         }: ScaleUnitSelectorProps) {
+  const { t } = useT()
   return (
     <div className="absolute bottom-[30px] left-[10px] z-[2]" onMouseEnter={onMouseEnter}>
       <div className="inline-flex overflow-hidden rounded text-[11px] font-semibold leading-none shadow-[0_0_0_2px_rgba(0,0,0,0.1)]">
@@ -28,7 +31,7 @@ export default function ScaleUnitSelector({
             cursor: 'pointer',
           }}
         >
-          Metric
+          {t('maps.scale.metric')}
         </button>
 
         {/* Imperial */}
@@ -44,7 +47,7 @@ export default function ScaleUnitSelector({
             cursor: 'pointer',
           }}
         >
-          Imperial
+          {t('maps.scale.imperial')}
         </button>
 
         {/* Nautical */}
@@ -60,7 +63,7 @@ export default function ScaleUnitSelector({
             cursor: 'pointer',
           }}
         >
-          Nautical
+          {t('maps.scale.nautical')}
         </button>
 
       </div>

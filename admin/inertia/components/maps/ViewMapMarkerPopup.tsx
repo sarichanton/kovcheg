@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
 import type { MapMarker } from '~/hooks/useMapMarkers'
+import { useT } from '~/i18n/I18nProvider'
 
 type ViewMapMarkerPopupProps = {
   marker: MapMarker
@@ -17,6 +18,7 @@ export default function ViewMapMarkerPopup({
                                              onEdit,
                                              onMouseEnter,
                                            }: ViewMapMarkerPopupProps) {
+  const { t } = useT()
   return (
     <Popup
       longitude={marker.longitude}
@@ -66,7 +68,7 @@ export default function ViewMapMarkerPopup({
             onClick={onClose}
             className="w-16 rounded bg-[#424420] px-2.5 py-1 text-xs text-white hover:bg-[#525530] border-none outline-none"
           >
-            Close
+            {t('common.close')}
           </button>
 
           <button
@@ -74,7 +76,7 @@ export default function ViewMapMarkerPopup({
             onClick={onEdit}
             className="w-16 rounded bg-[#424420] px-2.5 py-1 text-xs text-white hover:bg-[#525530] border-none outline-none"
           >
-            Edit
+            {t('common.edit')}
           </button>
         </div>
       </div>
