@@ -13,6 +13,7 @@ import KbGuardrailModal from './KbGuardrailModal'
 import { evaluateGuardrail, type GuardrailVerdict } from '~/lib/kb_guardrail'
 import { useSystemInfo } from '~/hooks/useSystemInfo'
 import { getPrimaryDiskInfo } from '~/hooks/useDiskDisplayData'
+import { useT } from '~/i18n/I18nProvider'
 
 /**
  * Filename for the embed-estimate registry lookup. Strips the URL path so
@@ -39,6 +40,8 @@ const TierSelectionModal: React.FC<TierSelectionModalProps> = ({
   selectedTierSlug,
   onSelectTier,
 }) => {
+  const { t } = useT()
+
   // Local selection state - initialized from prop
   const [localSelectedSlug, setLocalSelectedSlug] = useState<string | null>(null)
 
@@ -216,7 +219,7 @@ const TierSelectionModal: React.FC<TierSelectionModalProps> = ({
                 {/* Content */}
                 <div className="p-6">
                   <p className="text-text-secondary mb-6">
-                    Select a tier based on your storage capacity and needs. Higher tiers include all content from lower tiers.
+                    {t('tierSelection.selectTierHint')}
                   </p>
 
                   <div className="space-y-4">
@@ -249,7 +252,7 @@ const TierSelectionModal: React.FC<TierSelectionModalProps> = ({
                                 </h3>
                                 {includedTierName && (
                                   <span className="text-xs text-text-muted">
-                                    (includes {includedTierName})
+                                    {t('tierSelection.includes', { name: includedTierName })}
                                   </span>
                                 )}
                               </div>
@@ -260,11 +263,21 @@ const TierSelectionModal: React.FC<TierSelectionModalProps> = ({
                                 <p className="text-xs text-text-muted mb-2 font-medium">
                                   {includedTierName ? (
                                     <>
-                                      {ownResourceCount} additional {ownResourceCount === 1 ? 'resource' : 'resources'}
-                                      <span className="text-text-muted"> (plus everything in {includedTierName})</span>
+                                      {t('tierSelection.additionalResources', {
+                                        count: ownResourceCount,
+                                      })}
+                                      <span className="text-text-muted">
+                                        {t('tierSelection.plusEverythingIn', {
+                                          name: includedTierName,
+                                        })}
+                                      </span>
                                     </>
                                   ) : (
-                                    <>{ownResourceCount} {ownResourceCount === 1 ? 'resource' : 'resources'} included</>
+                                    <>
+                                      {t('tierSelection.resourcesIncluded', {
+                                        count: ownResourceCount,
+                                      })}
+                                    </>
                                   )}
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -313,20 +326,20 @@ const TierSelectionModal: React.FC<TierSelectionModalProps> = ({
                         <div className="flex-1">
                           <p className="text-text-primary">
                             <span className="font-medium">+~{formatBytes(embedEstimate.totalBytes, 1)}</span>
-                            {' '}of additional storage if these are indexed for the AI Assistant
+                            {' '}{t('tierSelection.embeddingAdditionalStorage')}
                             {embedEstimate.hasUnknown && (
-                              <span className="text-text-muted"> (estimate excludes some files we have no prior data for)</span>
+                              <span className="text-text-muted"> {t('tierSelection.embeddingUnknownFiles')}</span>
                             )}
                             .
                           </p>
                           <p className="text-text-muted text-xs mt-1">
                             {ingestPolicy === 'Always' ? (
                               <>
-                                Your <strong>Auto-index</strong> setting is <strong>Always</strong>, so these files will be indexed automatically once downloaded. You can change this in the Knowledge Base settings.
+                                {t('tierSelection.policyYour')}<strong>{t('tierSelection.policyAutoIndex')}</strong>{t('tierSelection.policySettingIs')}<strong>{t('tierSelection.policyAlways')}</strong>{t('tierSelection.policyAlwaysAfter')}
                               </>
                             ) : (
                               <>
-                                Your <strong>Auto-index</strong> setting is <strong>Manual</strong>, so these files will sit unindexed until you opt in from the Knowledge Base settings.
+                                {t('tierSelection.policyYour')}<strong>{t('tierSelection.policyAutoIndex')}</strong>{t('tierSelection.policySettingIs')}<strong>{t('tierSelection.policyManual')}</strong>{t('tierSelection.policyManualAfter')}
                               </>
                             )}
                           </p>
@@ -338,9 +351,7 @@ const TierSelectionModal: React.FC<TierSelectionModalProps> = ({
                   {/* Info note */}
                   <div className="mt-4 flex items-start gap-2 text-sm text-text-muted bg-blue-50 p-3 rounded">
                     <IconInfoCircle size={18} className="text-blue-500 flex-shrink-0 mt-0.5" />
-                    <p>
-                      You can change your selection at any time. Click Submit to confirm your choice.
-                    </p>
+                    <p>{t('tierSelection.footerHint')}</p>
                   </div>
                 </div>
 
@@ -352,7 +363,7 @@ const TierSelectionModal: React.FC<TierSelectionModalProps> = ({
                     onClick={handleSubmit}
                     disabled={!localSelectedSlug || (embedEstimateRequest.length > 0 && isEstimating)}
                   >
-                    Submit
+                    {t('common.submit')}
                   </StyledButton>
                 </div>
               </Dialog.Panel>
