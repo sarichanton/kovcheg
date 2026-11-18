@@ -1,5 +1,6 @@
 import type { KbIngestStateValue } from '../../types/kb_ingest_state.js'
 import type { StoredFileInfo } from '../../types/rag.js'
+import { translate, type Locale } from '../i18n/index.js'
 
 /**
  * Knowledge-base files come back as a list of `{source, state, chunksEmbedded}`
@@ -140,7 +141,8 @@ function collectionHeaderKey(collectionKey: string): string {
 export function groupAndSortKbFiles(
   files: StoredFileInfo[],
   sort: KbFileSort = DEFAULT_SORT,
-  expandedCollections: ReadonlySet<string> = new Set()
+  expandedCollections: ReadonlySet<string> = new Set(),
+  locale: Locale = 'en'
 ): KbFileGroup[] {
   const buckets: Record<KbFileBucket, StoredFileInfo[]> = {
     zim: [],
@@ -162,7 +164,9 @@ export function groupAndSortKbFiles(
       groups.push({
         bucket,
         source: '__admin_docs_group__',
-        displayName: `Project NOMAD documentation · ${members.length} file${members.length === 1 ? '' : 's'}`,
+        displayName: translate(locale, 'knowledgeBase.adminDocsGroup', {
+          count: members.length,
+        }),
         count: members.length,
         members: members.map((m) => m.source),
         state: null,
@@ -197,7 +201,8 @@ export function groupAndSortKbFiles(
       for (const key of collectionKeys) {
         const groupMembers = byCollection.get(key)!
         const collectionName = key === UNCATEGORIZED_COLLECTION_KEY ? null : key
-        const label = collectionName ?? 'Uncategorized'
+        const label =
+          collectionName ?? translate(locale, 'knowledgeBase.uncategorized')
         const activeCount = groupMembers.filter((m) => m.active).length
         const collectionActiveState: KbFileGroup['collectionActiveState'] =
           activeCount === 0
@@ -209,7 +214,10 @@ export function groupAndSortKbFiles(
         groups.push({
           bucket,
           source: collectionHeaderKey(key),
-          displayName: `${label} · ${groupMembers.length} file${groupMembers.length === 1 ? '' : 's'}`,
+          displayName: translate(locale, 'knowledgeBase.collectionHeader', {
+            name: label,
+            count: groupMembers.length,
+          }),
           count: groupMembers.length,
           members: groupMembers.map((m) => m.source),
           state: null,

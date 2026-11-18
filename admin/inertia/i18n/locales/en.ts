@@ -92,6 +92,14 @@ export const en = {
       many: '{count} items',
       other: '{count} items',
     },
+    notAvailable: 'N/A',
+    clear: 'Clear',
+    loadMore: 'Load More',
+    continue: 'Continue',
+    searchIn: 'Search in:',
+    all: 'All',
+    noMatches: 'No matches',
+    aiAssistant: 'AI Assistant',
   },
   nav: {
     home: 'Home',
@@ -640,6 +648,518 @@ export const en = {
     manualHintStrong: 'Manual',
     manualHintAfter: ' from the Knowledge Base panel.',
     proceedAnyway: 'Proceed anyway',
+  },
+  chat: {
+    openChat: 'Open chat',
+    conversationsAria: 'Chat conversations',
+    newChat: 'New Chat',
+    noPreviousChats: 'No previous chats',
+    openFullChat: 'Open Full Chat',
+    modelsAndSettings: 'Models & Settings',
+    knowledgeBase: 'Knowledge Base',
+    clearHistory: 'Clear History',
+    clearHistoryTitle: 'Clear All Chat History?',
+    clearHistoryConfirm: 'Clear All',
+    clearHistoryMessage:
+      'Are you sure you want to delete all chat sessions? This action cannot be undone and all conversations will be permanently deleted.',
+    startConversation: 'Start a conversation',
+    startDescription:
+      'Interact with your installed language models directly in the Command Center.',
+    suggestionsHeading: 'Suggestions:',
+    suggestionsHint:
+      'Need some inspiration? Enable chat suggestions in settings to get started with example prompts.',
+    thinking: 'Thinking',
+    inputPlaceholder: 'Type your message to {name}... (Shift+Enter for new line)',
+    image: {
+      attach: 'Attach images',
+      attached: 'Attached images',
+      remove: 'Remove {name}',
+      maxImages: 'You can attach up to {count} images.',
+      unsupported: '{name} is not supported. Use JPEG, PNG, or WebP.',
+      tooLarge: '{name} exceeds the 8 MB per-image limit.',
+      onlyFirst: {
+        one: 'Only the first {count} selected image(s) were attached.',
+        few: 'Only the first {count} selected image(s) were attached.',
+        many: 'Only the first {count} selected image(s) were attached.',
+        other: 'Only the first {count} selected image(s) were attached.',
+      },
+      describeDefault: 'Describe the attached image.',
+    },
+    message: {
+      reasoning: 'Reasoning',
+      thoughtFor: 'Thought for {seconds}s',
+      truncated: 'This answer hit the length limit and was cut off.',
+      sources: 'Sources',
+    },
+    modelSwitch: {
+      title: 'Switch to {name}?',
+      confirm: 'Switch & New Chat',
+      before: 'Switching to ',
+      after: ' will start a new chat. Your current conversation stays available in the sidebar.',
+    },
+    header: {
+      remoteDisconnected: 'Remote Disconnected',
+      remoteConnected: 'Remote Connected',
+      model: 'Model:',
+      loadingModels: 'Loading models...',
+      noModelsInstalled: 'No models installed',
+      knowledgeBase: 'Knowledge Base:',
+      kbTooltip:
+        'When on, the assistant searches your knowledge base for relevant documents before answering. Turning this off is faster and lighter on hardware, which helps when your knowledge base is small or empty. This is the same setting as in AI Assistant settings.',
+      thinking: 'Thinking:',
+      thinkingTooltip:
+        'When on, this model works through its reasoning before answering. Slower, but often better on tricky questions. Your choice is remembered for this model; the default for other models is set in AI Assistant settings.',
+      openSidebar: 'Open conversation sidebar',
+      closeSidebar: 'Close conversation sidebar',
+      closeChat: 'Close chat',
+    },
+    errors: {
+      emptyResponse: 'Sorry, I could not generate a response.',
+      requestFailed: 'Sorry, there was an error processing your request. Please try again.',
+      startFailed: 'Sorry, there was an error starting this chat. Please try again.',
+    },
+    nomadMd: {
+      template: `# NOMAD.md
+
+<!--
+This file holds custom instructions for your AI assistant. Everything here is
+sent to the assistant as a system prompt on every chat — use it to set persona,
+tone, priorities, and standing rules.
+
+It is also stored on disk at storage/NOMAD.md, so you can edit it directly.
+Replace this template with your own instructions, then click Save.
+-->
+
+## About me
+
+- (e.g. I'm setting up an off-grid homestead in a cold climate.)
+
+## How the assistant should respond
+
+- Be concise and practical.
+- Prioritize safety and proven methods.
+`,
+      saveFailed: 'Failed to save NOMAD.md.',
+      saved: 'NOMAD.md saved. It applies to new messages.',
+      yourAssistant: 'your AI assistant',
+      subtitle: 'Custom instructions passed to {name} as a system prompt on every chat.',
+      tipBefore: 'Tip: this file is also stored on disk at ',
+      tipAfter: ' and can be edited directly.',
+    },
+  },
+  models: {
+    headTitle: '{name} Settings | Project NOMAD',
+    pageDescription:
+      "Easily manage the {name}'s settings and installed models. We recommend starting with smaller models first to see how they perform on your system before moving on to larger ones.",
+    dependenciesMissing:
+      "{name}'s dependencies are not installed. Please install them to manage AI models.",
+    chatSuggestions: 'Chat Suggestions',
+    chatSuggestionsDescription: 'Display AI-generated conversation starters in the chat interface',
+    flashAttention: 'Flash Attention',
+    flashAttentionDescription:
+      'Enables OLLAMA_FLASH_ATTENTION=1 for improved memory efficiency. Disable if you experience instability. Takes effect after reinstalling the AI Assistant.',
+    autoThinking: 'Use thinking automatically when a model supports it',
+    autoThinkingDescription:
+      'Sets the default for models that can think. You can still turn thinking on or off for an individual model in the chat window.',
+    kbRetrieval: 'Knowledge Base Retrieval',
+    kbRetrievalDescription:
+      'Search your knowledge base for relevant documents before answering. Turn this off to save memory and speed up replies when your knowledge base is small or empty. This is the same switch as the one in the chat window.',
+    assistantName: 'Assistant Name',
+    assistantNameHelp:
+      'Give your AI assistant a custom name that will be used in the chat interface and other areas of the application.',
+    assistantNamePlaceholder: 'AI Assistant',
+    tasksModel: 'Tasks Model',
+    tasksModelHelp:
+      'Small, fast model used for background work like chat titles and suggestions. Leave this set to the chat model to use whichever model the chat is using. Avoid reasoning models here — they are slow at short, aesthetic tasks.',
+    useChatModel: 'Use the chat model',
+    notInstalled: '{name} (not installed)',
+    kbRelevance: 'Knowledge Base Relevance',
+    kbRelevanceHelp:
+      'How closely a knowledge-base passage has to match your question before it is used in an answer. Stricter settings keep unrelated passages out; too strict and genuinely useful ones get dropped too. When nothing clears the bar, the assistant answers from its own knowledge instead.',
+    relevanceOff: 'Off — use every passage retrieved',
+    relevanceLenient: 'Lenient',
+    relevanceBalanced: 'Balanced (recommended)',
+    relevanceStrict: 'Strict',
+    customValue: 'Custom ({value})',
+    relevanceCheck: 'Double-check knowledge base matches',
+    relevanceCheckDescription:
+      'Before answering, ask the Tasks Model whether the passages found are actually about your question, and leave them out (and uncited) when they are not. Helps most with large libraries like Wikipedia or Project Gutenberg, where something always looks similar. Needs a capable Tasks Model (about 8B parameters or larger); smaller models reject too many good matches. Adds a short delay to every reply.',
+    responseStyle: 'Response Style',
+    responseStyleHelp:
+      "How adventurous the assistant is when picking its next word. Auto follows whatever the model's author recommended and fills in the rest, and suits most people. Focused gives shorter, steadier, more repeatable answers and is the better choice for looking things up. Creative varies its wording more, at some cost to accuracy.",
+    responseStyleAuto: 'Auto (recommended)',
+    responseStyleFocused: 'Focused (factual, repeatable)',
+    responseStyleCreative: 'Creative (varied, exploratory)',
+    responseStyleOff: 'Backend defaults (send nothing)',
+    contextWindow: 'Context Window',
+    contextWindowHelp:
+      'How much conversation and knowledge-base context each reply can consider. Auto sizes this per model from its trained limit and your available memory. Choosing a value sets an upper limit — it can lower the window to save memory, but never raises it beyond what a model supports.',
+    autoRecommended: 'Auto (recommended)',
+    contextTokens: '{value} tokens',
+    currentlyInEffect:
+      'Currently in effect: {windows}. Changes take effect for new conversations.',
+    installedModels: 'Installed Models',
+    noModelsInstalled: 'No models installed. Browse the model catalog below to get started.',
+    columnModel: 'Model',
+    columnParameters: 'Parameters',
+    columnDiskSize: 'Disk Size',
+    columnAction: 'Action',
+    remoteConnection: 'Remote Connection',
+    remoteConnectionDescriptionBefore:
+      'Connect to any OpenAI-compatible API server — Ollama, LM Studio, llama.cpp, and others are all supported. For remote Ollama instances, the host must be started with ',
+    remoteConnectionDescriptionAfter: '.',
+    remoteUrlLabel: 'Remote Ollama/OpenAI API URL',
+    remoteUrlPlaceholder:
+      'http://192.168.1.100:11434  (or :1234 for OpenAI API Compatible Apps)',
+    saveAndTest: 'Save & Test',
+    title: 'Models',
+    downloadOnlyOllama: 'Model downloading is only supported when using a Ollama backend.',
+    downloadOnlyOllamaMessage:
+      'If you are connected to an OpenAI API host (e.g. LM Studio), please download models directly in that application.',
+    searchPlaceholder: 'Search language models..',
+    refreshModels: 'Refresh Models',
+    estimatedPulls: 'Estimated Pulls',
+    lastUpdated: 'Last Updated',
+    tag: 'Tag',
+    inputType: 'Input Type',
+    contextSize: 'Context Size',
+    modelSize: 'Model Size',
+    remoteOllamaConfigureFailed: 'Failed to configure remote Ollama.',
+    remoteOllamaCleared: 'Remote Ollama configuration cleared.',
+    remoteOllamaClearFailed: 'Failed to clear remote Ollama.',
+    listRefreshed: 'Model list refreshed from remote.',
+    downloadStarted: 'Model download initiated for {name}. It may take some time to complete.',
+    installFailed: 'There was an error installing the model: {name}. Please try again.',
+    deleted: 'Model deleted: {name}.',
+    deleteFailed: 'There was an error deleting the model: {name}. Please try again.',
+    confirmDeleteTitle: 'Delete Model?',
+    confirmDeleteMessage:
+      'Are you sure you want to delete this model? You will need to download it again if you want to use it in the future.',
+    settingUpdated: 'Setting updated successfully.',
+    settingUpdateFailed: 'There was an error updating the setting. Please try again.',
+  },
+  activeModelDownloads: {
+    title: 'Active Model Downloads',
+    cancelTitle: 'Cancel Download?',
+    cancelConfirm: 'Cancel Download',
+    keepDownloading: 'Keep Downloading',
+    stopBefore: 'Stop downloading ',
+    stopAfter: '?',
+    keepData:
+      'Any data already downloaded will remain on disk. If you re-download this model later, it will resume from where it left off rather than starting over.',
+    cancelTooltip: 'Cancel download',
+    downloading: 'Downloading...',
+    empty: 'No active model downloads',
+    speedZero: '0 B/s',
+    speedBytes: '{value} B/s',
+    speedKb: '{value} KB/s',
+    speedMb: '{value} MB/s',
+  },
+  vision: {
+    unsupported:
+      'This model cannot use images. Choose a model marked “Supports images” in Models & Settings.',
+    unknown:
+      'NOMAD cannot confirm whether this model accepts images. You can try an image, but the request will fail if the model is text-only. {notice}',
+    temporaryNotice:
+      'Images are sent only with this request. They are not saved and will disappear after you send them or reload this page.',
+  },
+  chatStream: {
+    genericError: 'The model encountered an error. Please try again.',
+  },
+  kbJobHealth: {
+    waiting: 'Waiting',
+    waitingAria: 'Job is queued and waiting to start',
+    healthy: 'Active',
+    healthyAria: 'Job is embedding at a normal rate',
+    slow: 'Slow',
+    slowAria: 'Job has not made progress for at least 2 minutes',
+    stalled: 'Stalled',
+    stalledAria: 'Job has not made progress for at least 5 minutes',
+    failed: 'Failed',
+    failedAria: 'Job failed',
+    justNow: 'just now',
+    secondsAgo: {
+      one: '{count}s ago',
+      few: '{count}s ago',
+      many: '{count}s ago',
+      other: '{count}s ago',
+    },
+    minutesAgo: {
+      one: '{count}m ago',
+      few: '{count}m ago',
+      many: '{count}m ago',
+      other: '{count}m ago',
+    },
+    hoursAgo: {
+      one: '{count}h ago',
+      few: '{count}h ago',
+      many: '{count}h ago',
+      other: '{count}h ago',
+    },
+  },
+  knowledgeBase: {
+    title: 'Knowledge Base',
+    unavailableTitle: 'Knowledge Base unavailable:',
+    unavailableMessage: 'The Qdrant vector database is offline.',
+    starting: 'Starting…',
+    startQdrant: 'Start Qdrant',
+    collectionLabel: 'Collection:',
+    upload: 'Upload',
+    whyUploadTitle: 'Why upload documents to your Knowledge Base?',
+    integrationTitle: '{name} Knowledge Base Integration',
+    integrationBody:
+      'When you upload documents to your Knowledge Base, NOMAD processes and embeds the content, making it directly accessible to {name}. This allows {name} to reference your specific documents during conversations, providing more accurate and personalized responses based on your uploaded data.',
+    ocrTitle: 'Enhanced Document Processing with OCR',
+    ocrBody:
+      'NOMAD includes built-in Optical Character Recognition (OCR) capabilities, allowing it to extract text from image-based documents such as scanned PDFs or photos. This means that even if your documents are not in a standard text format, NOMAD can still process and embed their content for AI access.',
+    libraryTitle: 'Information Library Integration',
+    libraryBody:
+      'NOMAD will automatically discover and extract any content you save to your Information Library (if installed), making it instantly available to {name} without any extra steps.',
+    autoIndexTitle: 'Auto-index new content for AI?',
+    autoIndexDescription:
+      'Indexed content typically uses 5–10× the original file size on disk. Changes apply to new content added after this setting changes.',
+    ingestPolicyAria: 'Ingest policy',
+    always: 'Always',
+    manual: 'Manual',
+    processingQueue: 'Processing Queue',
+    cleanUpFailed: 'Clean Up Failed',
+    cancelAllJobs: 'Cancel All Jobs',
+    cancelAllJobsTooltip:
+      'Stop and clear every embedding job regardless of state, including stuck or in-progress ones. Deletes the uploaded source files for those jobs.',
+    storedFiles: 'Stored Knowledge Base Files',
+    uncategorized: 'Uncategorized',
+    manageCollections: 'Manage Collections',
+    resetRebuild: 'Reset & Rebuild',
+    resetRebuildTooltip:
+      'Drop the entire embeddings collection and re-embed everything from scratch. Permanently removes vectors for files no longer on disk. Destructive: requires typing RESET to confirm.',
+    reembedAll: 'Re-embed All',
+    reembedAllTooltip:
+      'Re-embed every file on disk, replacing existing vectors file-by-file. Vectors for files no longer on disk are preserved. Use this if the chunker or embedding model has changed.',
+    syncStorage: 'Sync Storage',
+    syncStorageTooltip:
+      "Scan storage for new files and queue any that haven't been embedded yet. Safe to run anytime; won't touch already-embedded content.",
+    warningsUnavailable:
+      "File warnings unavailable — couldn't read storage state. Retrying…",
+    columns: {
+      fileName: 'File Name',
+      size: 'Size',
+      uploaded: 'Uploaded',
+      collection: 'Collection',
+      active: 'Active',
+    },
+    state: {
+      indexed: 'Indexed',
+      notIndexed: 'Not Indexed',
+      failed: 'Failed',
+      stalled: 'Stalled',
+    },
+    warnings: {
+      zeroChunks:
+        'Embedded 0 chunks — this file has no text content. AI Assistant cannot reference it.',
+      partialStall:
+        'Only {embedded} of est. {expected} chunks embedded — ingestion may have stalled.',
+    },
+    managedByNomad: 'Managed by NOMAD',
+    removeConfirm: 'Remove from knowledge base?',
+    deleting: 'Deleting…',
+    actionReembed: 'Re-embed',
+    actionIndex: 'Index',
+    actionRetry: 'Retry',
+    view: 'View',
+    notifications: {
+      policyAlways: 'New content will be auto-indexed for AI.',
+      policyManual: 'New content will wait for you to opt in.',
+      policyFailed: 'Failed to update indexing policy.',
+      collectionUpdated: 'Collection updated.',
+      collectionUpdateFailed: 'Failed to update collection.',
+      activeUpdated: 'Active state updated.',
+      activeUpdateFailed: 'Failed to update active state.',
+      collectionActiveUpdated: 'Collection active state updated.',
+      collectionActiveUpdateFailed: 'Failed to update collection active state.',
+      fileRemoved: 'File removed from knowledge base.',
+      fileDeleteFailed: 'Failed to delete file.',
+      fileQueued: 'File queued for embedding.',
+      fileQueueFailed: 'Failed to queue file.',
+      jobsCleaned: 'Failed jobs cleaned up.',
+      jobsCleanFailed: 'Failed to clean up jobs.',
+      allJobsCancelled: 'All embedding jobs cancelled.',
+      jobsCancelFailed: 'Failed to cancel jobs.',
+      qdrantStartFailed: 'Failed to start Qdrant.',
+      storageSynced:
+        'Storage synced successfully. If new files were found, they have been queued for processing.',
+      storageSyncFailed: 'Failed to sync storage',
+      reembedCompleted: 'Re-embed completed.',
+      reembedFailed: 'Failed to re-embed knowledge base.',
+      resetComplete: 'Reset complete.',
+      resetFailed: 'Failed to reset knowledge base.',
+    },
+    uploadQueued: {
+      one: '{count} file queued for processing.',
+      few: '{count} files queued for processing.',
+      many: '{count} files queued for processing.',
+      other: '{count} files queued for processing.',
+    },
+    uploadFailed: 'Failed to upload: {name}',
+    cancelAll: {
+      title: 'Cancel All Embedding Jobs?',
+      confirm: 'Cancel All Jobs',
+      keep: 'Keep Jobs',
+      messageBefore: 'This stops ',
+      messageStrong: 'every',
+      messageAfter:
+        " embedding job — including ones still in progress or stuck — and clears the processing queue. The uploaded source files for those jobs are deleted, so you'll need to re-upload anything you still want indexed. Stored files that already finished embedding are not affected. Are you sure you want to proceed?",
+    },
+    sync: {
+      title: 'Confirm Sync?',
+      confirm: 'Confirm Sync',
+      message:
+        "This will scan the NOMAD's storage directories for any new files and queue them for processing. This is useful if you've manually added files to the storage or want to ensure everything is up to date. This may cause a temporary increase in resource usage if new files are found and being processed. Are you sure you want to proceed?",
+    },
+    reembedModal: {
+      title: 'Re-embed All Documents?',
+      confirm: 'Re-embed All',
+      confirmPending: 'Re-embedding…',
+      bodyBefore:
+        'This will re-process every document currently in your knowledge base — about',
+      bodyFiles: {
+        one: '{count} file',
+        few: '{count} files',
+        many: '{count} files',
+        other: '{count} files',
+      },
+      bodyAfter:
+        '. For each file, NOMAD will delete the existing embeddings from Qdrant and queue a fresh embedding job using the current chunking and embedding model.',
+      purposeTitle: 'What this is for',
+      purposeBefore:
+        'Use this when the embedding model or chunking logic has changed, or when you suspect stored vectors are stale. Files on disk are ',
+      purposeNot: 'not',
+      purposeAfterNot:
+        ' deleted, and any orphan points whose source file is no longer present will be preserved untouched (see ',
+      purposeAfterRebuild: ' if you want a fully clean slate).',
+      warningTitle: 'Heads up',
+      warningOne: {
+        one: 'Embedding {count} file may take a long time, especially for large PDFs or ZIM archives.',
+        few: 'Embedding {count} files may take a long time, especially for large PDFs or ZIM archives.',
+        many: 'Embedding {count} files may take a long time, especially for large PDFs or ZIM archives.',
+        other: 'Embedding {count} files may take a long time, especially for large PDFs or ZIM archives.',
+      },
+      warningTwo:
+        'On systems without GPU acceleration, expect sustained high CPU usage for the duration.',
+      warningThree:
+        'Knowledge Base search results may be incomplete until every file finishes re-embedding.',
+      warningFour:
+        'If embed jobs are already in progress, this action will be refused — wait for the queue to drain first.',
+    },
+    resetModal: {
+      title: 'Reset & Rebuild Knowledge Base?',
+      confirm: 'Wipe & Rebuild',
+      confirmPending: 'Resetting…',
+      bodyLead: 'This will ',
+      bodyStrong: 'permanently delete every point',
+      bodyAfterStrong: ' in the',
+      bodyAfterBefore: 'Qdrant collection and rebuild from the',
+      bodyFiles: {
+        one: '{count} file',
+        few: '{count} files',
+        many: '{count} files',
+        other: '{count} files',
+      },
+      bodyAfterCount:
+        ' currently on disk. The collection is dropped, recreated, and every file is re-queued for embedding.',
+      differenceTitle: 'How this differs from Re-embed All',
+      differenceOneBefore: 'Re-embed All',
+      differenceOneAfter:
+        ' replaces vectors file-by-file. Any orphan points (vectors whose source file was deleted from disk at some point) are preserved.',
+      differenceTwoBefore: 'Reset & Rebuild',
+      differenceTwoAfter: ' drops the entire collection. Orphan points are ',
+      differenceTwoStrong: 'gone forever',
+      differenceTwoTail: '. Only files currently on disk will exist in Qdrant afterwards.',
+      destructiveTitle: 'This action is destructive and cannot be undone',
+      destructiveOne:
+        'Knowledge Base search will be empty until embedding finishes (potentially hours on CPU-only systems).',
+      destructiveTwo:
+        'For a few seconds during the reset, the Qdrant collection does not exist — any chat-with-RAG queries in that window may return a "collection not found" error. Avoid using chat until the rebuild has begun.',
+      destructiveThree:
+        'If embed jobs are already in progress, this action will be refused — wait for the queue to drain first.',
+      typeBefore: 'Type ',
+      typeAfter: ' to confirm:',
+      typeMismatch: 'Type RESET exactly (uppercase, no spaces) to enable the confirm button.',
+      resetPlaceholder: 'RESET',
+    },
+    reembedFileModal: {
+      title: 'Re-embed this file?',
+      confirm: 'Re-embed',
+      confirmPending: 'Queuing…',
+      bodyBefore: 'This will delete the existing embeddings for ',
+      bodyAfter:
+        ' and queue a fresh embedding job. The file on disk is not touched.',
+      warningTitle: 'Heads up',
+      warningOne:
+        'For large ZIM archives this can take a long time, especially on CPU-only systems.',
+      warningTwo:
+        'Search results that referenced this file will be incomplete until the new embedding finishes.',
+      warningThree:
+        'If a job for this file is already running, the re-embed will be refused — wait for it to finish first.',
+    },
+    adminDocsGroup: {
+      one: 'Project NOMAD documentation · {count} file',
+      few: 'Project NOMAD documentation · {count} files',
+      many: 'Project NOMAD documentation · {count} files',
+      other: 'Project NOMAD documentation · {count} files',
+    },
+    collectionHeader: {
+      one: '{name} · {count} file',
+      few: '{name} · {count} files',
+      many: '{name} · {count} files',
+      other: '{name} · {count} files',
+    },
+    collectionCreate: '+ Create "{name}"',
+    jobs: {
+      title: 'Processing Queue',
+      empty: 'No files are currently being processed',
+      lastActivity: '· last activity {time}',
+      chunks: {
+        one: '· {count} chunk',
+        few: '· {count} chunks',
+        many: '· {count} chunks',
+        other: '· {count} chunks',
+      },
+    },
+    collections: {
+      manageTitle: 'Manage Collections',
+      description:
+        "Rename or remove collections. Removing a collection doesn't delete any files — they're simply moved back to Uncategorized so you can re-sort them.",
+      empty:
+        'No collections yet. Assign a file to a collection from the Knowledge Base table to create one.',
+      rename: 'Rename',
+      confirmRemove: 'Remove "{name}"? Files move to Uncategorized.',
+      renamed: 'Collection renamed.',
+      renameFailed: 'Failed to rename collection.',
+      removed: 'Collection removed.',
+      removeFailed: 'Failed to remove collection.',
+    },
+    policyPrompt: {
+      title: {
+        one: 'Index your existing file for {name}?',
+        few: 'Index your {count} existing files for {name}?',
+        many: 'Index your {count} existing files for {name}?',
+        other: 'Index your {count} existing files for {name}?',
+      },
+      description:
+        'When indexed, {name} can reference them while answering your questions.',
+      indexNow: 'Index existing content',
+      maybeLater: 'Maybe later',
+      started:
+        '{name} will index your existing content. You can track progress in the Knowledge Base panel.',
+      indexFailed: 'Could not start indexing. Try again from the Knowledge Base panel.',
+      laterSaved:
+        'Your content stays unindexed for now. You can opt in any time from the Knowledge Base panel.',
+      laterFailed: 'Could not save your choice. Try again.',
+    },
+    viewer: {
+      loading: 'Loading…',
+      error: "Couldn't load file. It may have been moved or its type isn't viewable.",
+    },
   },
   errors: {
     generic: 'Something went wrong',

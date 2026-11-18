@@ -1,16 +1,19 @@
 import type { ModelVisionCapability } from '../../types/ollama.js'
+import { translate, type Locale } from '../i18n/index.js'
 
-const TEMPORARY_IMAGE_NOTICE =
-  'Images are sent only with this request. They are not saved and will disappear after you send them or reload this page.'
-
-export function visionAttachmentGuidance(capability: ModelVisionCapability): string {
+export function visionAttachmentGuidance(
+  capability: ModelVisionCapability,
+  locale: Locale = 'en'
+): string {
   if (capability === 'unsupported') {
-    return 'This model cannot use images. Choose a model marked “Supports images” in Models & Settings.'
+    return translate(locale, 'vision.unsupported')
   }
 
   if (capability === 'unknown') {
-    return `NOMAD cannot confirm whether this model accepts images. You can try an image, but the request will fail if the model is text-only. ${TEMPORARY_IMAGE_NOTICE}`
+    return translate(locale, 'vision.unknown', {
+      notice: translate(locale, 'vision.temporaryNotice'),
+    })
   }
 
-  return TEMPORARY_IMAGE_NOTICE
+  return translate(locale, 'vision.temporaryNotice')
 }

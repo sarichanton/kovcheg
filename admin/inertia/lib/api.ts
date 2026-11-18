@@ -18,6 +18,7 @@ import { BenchmarkType, RunBenchmarkResponse, SubmitBenchmarkResponse, UpdateBui
 import type { CreateMapMarkerPayload, MapMarkerResponse, UpdateMapMarkerPayload } from '../../types/maps'
 import type { ChatSource } from '../../types/chat'
 import { chatStreamErrorMessage } from './chat_stream.js'
+import { getStoredLocale } from '../i18n/index.js'
 
 type OllamaChatRequestWithImages = OllamaChatRequest & { images?: File[] }
 
@@ -400,7 +401,7 @@ class API {
             data = JSON.parse(line.slice(6))
           } catch { continue /* skip malformed chunks */ }
 
-          const streamError = chatStreamErrorMessage(data)
+          const streamError = chatStreamErrorMessage(data, getStoredLocale())
           if (streamError) throw new Error(streamError)
 
           // Citation metadata (#1179) arrives as a distinct trailing event with no

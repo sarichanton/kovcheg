@@ -1,4 +1,5 @@
 import { computeJobHealth, type JobHealthStatus } from '../../app/utils/kb_job_health.js'
+import { translate, type Locale, type TranslateKey } from '../i18n/index.js'
 
 export { computeJobHealth, type JobHealthStatus } from '../../app/utils/kb_job_health.js'
 
@@ -9,47 +10,65 @@ export { computeJobHealth, type JobHealthStatus } from '../../app/utils/kb_job_h
  */
 export const JOB_HEALTH_DISPLAY: Record<
   JobHealthStatus,
-  { dot: string; label: string; ariaLabel: string }
+  {
+    dot: string
+    labelKey: TranslateKey
+    ariaLabelKey: TranslateKey
+  }
 > = {
   waiting: {
     dot: 'bg-gray-400 dark:bg-gray-500',
-    label: 'Waiting',
-    ariaLabel: 'Job is queued and waiting to start',
+    labelKey: 'kbJobHealth.waiting',
+    ariaLabelKey: 'kbJobHealth.waitingAria',
   },
   healthy: {
     dot: 'bg-green-500',
-    label: 'Active',
-    ariaLabel: 'Job is embedding at a normal rate',
+    labelKey: 'kbJobHealth.healthy',
+    ariaLabelKey: 'kbJobHealth.healthyAria',
   },
   slow: {
     dot: 'bg-yellow-500',
-    label: 'Slow',
-    ariaLabel: 'Job has not made progress for at least 2 minutes',
+    labelKey: 'kbJobHealth.slow',
+    ariaLabelKey: 'kbJobHealth.slowAria',
   },
   stalled: {
     dot: 'bg-red-500',
-    label: 'Stalled',
-    ariaLabel: 'Job has not made progress for at least 5 minutes',
+    labelKey: 'kbJobHealth.stalled',
+    ariaLabelKey: 'kbJobHealth.stalledAria',
   },
   failed: {
     dot: 'bg-red-700',
-    label: 'Failed',
-    ariaLabel: 'Job failed',
+    labelKey: 'kbJobHealth.failed',
+    ariaLabelKey: 'kbJobHealth.failedAria',
   },
+}
+
+/** Resolve a health status into localized label and accessible description. */
+export function jobHealthDisplay(health: JobHealthStatus, locale: Locale) {
+  const display = JOB_HEALTH_DISPLAY[health]
+  return {
+    dot: display.dot,
+    label: translate(locale, display.labelKey),
+    ariaLabel: translate(locale, display.ariaLabelKey),
+  }
 }
 
 /**
  * Format a relative timestamp as "Xs ago", "Xm ago", "Xh ago" with sensible
  * thresholds for the KB Processing Queue's "Last activity" line.
  */
-export function formatTimeAgo(timestampMs: number, now: number): string {
+export function formatTimeAgo(
+  timestampMs: number,
+  now: number,
+  locale: Locale = 'en'
+): string {
   const seconds = Math.max(0, Math.floor((now - timestampMs) / 1000))
-  if (seconds < 5) return 'just now'
-  if (seconds < 60) return `${seconds}s ago`
+  if (seconds < 5) return translate(locale, 'kbJobHealth.justNow')
+  if (seconds < 60) return translate(locale, 'kbJobHealth.secondsAgo', { count: seconds })
   const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m ago`
+  if (minutes < 60) return translate(locale, 'kbJobHealth.minutesAgo', { count: minutes })
   const hours = Math.floor(minutes / 60)
-  return `${hours}h ago`
+  return translate(locale, 'kbJobHealth.hoursAgo', { count: hours })
 }
 
 /**
