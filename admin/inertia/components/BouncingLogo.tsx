@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useT } from '~/i18n/I18nProvider';
 
 // Fading Image Component
-const FadingImage = ({  alt = "Fading image", className = "" }) => {
+const FadingImage = ({  alt, className = "" }: { alt?: string; className?: string }) => {
+  const { t } = useT();
   const [isVisible, setIsVisible] = useState(true);
   const [shouldShow, setShouldShow] = useState(true);
 
@@ -32,7 +34,7 @@ const FadingImage = ({  alt = "Fading image", className = "" }) => {
     }`}>
       <img
         src="/nomad-primary.svg"
-        alt={alt}
+        alt={alt ?? t('common.fadingImageAlt')}
         className={`w-64 h-64 object-contain ${className}`}
       />
     </div>

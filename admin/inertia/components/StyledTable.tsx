@@ -2,6 +2,7 @@ import { capitalizeFirstLetter } from '~/lib/util'
 import classNames from '~/lib/classNames'
 import LoadingSpinner from '~/components/LoadingSpinner'
 import React, { RefObject, useState } from 'react'
+import { useT } from '~/i18n/I18nProvider'
 
 export type StyledTableProps<T extends { [key: string]: any }> = {
   loading?: boolean
@@ -43,7 +44,7 @@ function StyledTable<T extends { [key: string]: any }>({
   tableBodyClassName = '',
   tableBodyStyle = {},
   data = [],
-  noDataText = 'No records found',
+  noDataText,
   onRowClick,
   columns = [],
   className = '',
@@ -53,6 +54,8 @@ function StyledTable<T extends { [key: string]: any }>({
   compact = false,
   expandable,
 }: StyledTableProps<T>) {
+  const { t } = useT()
+  const emptyText = noDataText ?? t('common.noRecords')
   const { className: tableClassName, ...restTableProps } = tableProps
 
   const [expandedRowKeys, setExpandedRowKeys] = useState<(string | number)[]>(
@@ -140,7 +143,7 @@ function StyledTable<T extends { [key: string]: any }>({
                       >
                         <button
                           className="text-text-muted hover:text-text-primary focus:outline-none"
-                          aria-label={isExpanded ? 'Collapse row' : 'Expand row'}
+                          aria-label={isExpanded ? t('common.collapseRow') : t('common.expandRow')}
                         >
                           <svg
                             className={classNames(
@@ -190,7 +193,7 @@ function StyledTable<T extends { [key: string]: any }>({
           {!loading && data.length === 0 && (
             <tr>
               <td colSpan={columns.length + (expandable ? 1 : 0)} className="!text-center py-8 text-text-muted">
-                {noDataText}
+                {emptyText}
               </td>
             </tr>
           )}

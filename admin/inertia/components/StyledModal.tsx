@@ -2,6 +2,7 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/re
 import StyledButton, { StyledButtonProps } from './StyledButton'
 import React from 'react'
 import classNames from '~/lib/classNames'
+import { useT } from '~/i18n/I18nProvider'
 
 export type StyledModalProps = {
   onClose?: () => void
@@ -27,10 +28,10 @@ const StyledModal: React.FC<StyledModalProps> = ({
   title,
   open,
   onClose,
-  cancelText = 'Cancel',
+  cancelText,
   cancelIcon,
   cancelLoading = false,
-  confirmText = 'Confirm',
+  confirmText,
   confirmIcon,
   confirmVariant = 'action',
   confirmLoading = false,
@@ -40,6 +41,10 @@ const StyledModal: React.FC<StyledModalProps> = ({
   icon,
   large = false,
 }) => {
+  const { t } = useT()
+  const resolvedCancelText = cancelText ?? t('common.cancel')
+  const resolvedConfirmText = confirmText ?? t('common.confirm')
+
   return (
     <Dialog
       open={open}
@@ -76,7 +81,7 @@ const StyledModal: React.FC<StyledModalProps> = ({
               </div>
             </div>
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-              {cancelText && onCancel && (
+              {resolvedCancelText && onCancel && (
                 <StyledButton
                   variant="outline"
                   onClick={() => {
@@ -85,10 +90,10 @@ const StyledModal: React.FC<StyledModalProps> = ({
                   icon={cancelIcon}
                   loading={cancelLoading}
                 >
-                  {cancelText}
+                  {resolvedCancelText}
                 </StyledButton>
               )}
-              {confirmText && onConfirm && (
+              {resolvedConfirmText && onConfirm && (
                 <StyledButton
                   variant={confirmVariant}
                   onClick={() => {
@@ -98,7 +103,7 @@ const StyledModal: React.FC<StyledModalProps> = ({
                   loading={confirmLoading}
                   disabled={confirmDisabled}
                 >
-                  {confirmText}
+                  {resolvedConfirmText}
                 </StyledButton>
               )}
             </div>
