@@ -1,6 +1,16 @@
 import { NomadDiskInfo } from '../../types/system'
 import { Systeminformation } from 'systeminformation'
 import { formatBytes } from '~/lib/util'
+import {
+  getCurrentLocale,
+  translate,
+  type TranslateKey,
+  type TranslationParams,
+} from '~/i18n'
+
+type Translate = (key: TranslateKey, params?: TranslationParams) => string
+
+const defaultTranslate: Translate = (key, params) => translate(getCurrentLocale(), key, params)
 
 type DiskDisplayItem = {
   label: string
@@ -15,7 +25,8 @@ type DiskDisplayItem = {
 /** Get all valid disks formatted for display (settings/system page) */
 export function getAllDiskDisplayItems(
   disks: NomadDiskInfo[] | undefined,
-  fsSize: Systeminformation.FsSizeData[] | undefined
+  fsSize: Systeminformation.FsSizeData[] | undefined,
+  t: Translate = defaultTranslate
 ): DiskDisplayItem[] {
   const validDisks = disks?.filter((d) => d.totalSize > 0) || []
 
@@ -31,7 +42,7 @@ export function getAllDiskDisplayItems(
   const storageMountItem: DiskDisplayItem[] = storageMount
     ? [
         {
-          label: 'NAS Storage',
+          label: t('system.nasStorage'),
           value: storageMount.use || 0,
           total: formatBytes(storageMount.size),
           used: formatBytes(storageMount.used),
@@ -46,7 +57,7 @@ export function getAllDiskDisplayItems(
     return [
       ...storageMountItem,
       ...validDisks.map((disk) => ({
-        label: disk.name || 'Unknown',
+        label: disk.name || t('common.unknown'),
         value: disk.percentUsed || 0,
         total: formatBytes(disk.totalSize),
         used: formatBytes(disk.totalUsed),
@@ -70,7 +81,7 @@ export function getAllDiskDisplayItems(
     return [
       ...storageMountItem,
       ...displayFs.map((fs) => ({
-        label: fs.fs || 'Unknown',
+        label: fs.fs || t('common.unknown'),
         value: fs.use || 0,
         total: formatBytes(fs.size),
         used: formatBytes(fs.used),

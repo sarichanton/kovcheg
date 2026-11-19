@@ -14,6 +14,7 @@ export default function LegalPage() {
           {/* License Agreement */}
           <section className="mb-10">
             <h2 className="text-2xl font-semibold mb-4">{t('legal.licenseAgreement')}</h2>
+            <p className="text-text-primary mb-3">{t('legal.licenseOriginalNote')}</p>
             <p className="text-text-primary mb-3">Copyright 2024-2026 Crosstalk Solutions, LLC</p>
             <p className="text-text-primary mb-3">
               Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -38,32 +39,32 @@ export default function LegalPage() {
             <p className="text-text-primary mb-4">{t('legal.thirdPartyIntro')}</p>
             <ul className="space-y-3 text-text-primary">
               <li>
-                <strong>Kiwix</strong> - Offline Wikipedia and content reader (GPL-3.0 License)
+                <strong>Kiwix</strong> — {t('legal.thirdParty.kiwix')}
                 <br />
                 <a href="https://kiwix.org" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://kiwix.org</a>
               </li>
               <li>
-                <strong>Kolibri</strong> - Offline learning platform by Learning Equality (MIT License)
+                <strong>Kolibri</strong> — {t('legal.thirdParty.kolibri')}
                 <br />
                 <a href="https://learningequality.org/kolibri" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://learningequality.org/kolibri</a>
               </li>
               <li>
-                <strong>Ollama</strong> - Local large language model runtime (MIT License)
+                <strong>Ollama</strong> — {t('legal.thirdParty.ollama')}
                 <br />
                 <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://ollama.com</a>
               </li>
               <li>
-                <strong>CyberChef</strong> - Data analysis and encoding toolkit by GCHQ (Apache 2.0 License)
+                <strong>CyberChef</strong> — {t('legal.thirdParty.cyberchef')}
                 <br />
                 <a href="https://github.com/gchq/CyberChef" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://github.com/gchq/CyberChef</a>
               </li>
               <li>
-                <strong>FlatNotes</strong> - Self-hosted note-taking application (MIT License)
+                <strong>FlatNotes</strong> — {t('legal.thirdParty.flatnotes')}
                 <br />
                 <a href="https://github.com/dullage/flatnotes" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://github.com/dullage/flatnotes</a>
               </li>
               <li>
-                <strong>Qdrant</strong> - Vector search engine for AI knowledge base (Apache 2.0 License)
+                <strong>Qdrant</strong> — {t('legal.thirdParty.qdrant')}
                 <br />
                 <a href="https://github.com/qdrant/qdrant" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">https://github.com/qdrant/qdrant</a>
               </li>

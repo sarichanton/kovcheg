@@ -45,7 +45,7 @@ export default function SettingsPage(props: {
       : t('system.uptimeM', { minutes: uptimeMinutes })
 
   // Build storage display items - fall back to fsSize when disk array is empty
-  const storageItems = getAllDiskDisplayItems(info?.disk, info?.fsSize)
+  const storageItems = getAllDiskDisplayItems(info?.disk, info?.fsSize, t)
 
   return (
     <SettingsLayout>

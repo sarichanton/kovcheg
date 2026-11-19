@@ -40,6 +40,9 @@ export const SERVER_MESSAGE_KEYS: Record<string, TranslateKey> = {
   'System benchmark started': 'serverMessages.benchmarkSystemStarted',
   'AI benchmark started': 'serverMessages.benchmarkAiStarted',
   'Benchmark result not found': 'serverMessages.benchmarkNotFound',
+  'This benchmark has already been submitted to the repository':
+    'serverMessages.benchmarkAlreadySubmitted',
+  'Failed to submit benchmark': 'serverMessages.benchmarkSubmitFailed',
   'You can only submit one benchmark per hour. Please wait a bit and try again.':
     'serverMessages.benchmarkSubmitLimit',
   'Invalid builder tag format. Expected: Word-Word-0000':

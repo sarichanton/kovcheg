@@ -38,7 +38,7 @@ test('localizeServerMessage translates a known server message', () => {
 test('localizeServerMessage interpolates dynamic server messages', () => {
   assert.equal(
     localizeServerMessage('Service nomad_ollama started successfully', translateWith('ru')),
-    'Сервис nomad_ollama запущен'
+    'Служба nomad_ollama запущена'
   )
 })
 
