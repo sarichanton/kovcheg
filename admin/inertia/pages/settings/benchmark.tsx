@@ -26,6 +26,8 @@ import { useBenchmarkRun } from '~/hooks/useBenchmarkRun'
 import BenchmarkRunView from '~/components/benchmark/BenchmarkRunView'
 import ScoreReveal from '~/components/benchmark/ScoreReveal'
 import { getScoreDisplay } from '~/lib/benchmarkScore'
+import { formatBytes } from '~/lib/util'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 export default function BenchmarkPage(props: {
@@ -35,7 +37,7 @@ export default function BenchmarkPage(props: {
     currentBenchmarkId: string | null
   }
 }) {
-  const { t } = useT()
+  const { t, formatDate, formatNumber } = useT()
   const { aiAssistantName } = usePage<{ aiAssistantName: string }>().props
   const queryClient = useQueryClient()
   const aiInstalled = useServiceInstalledStatus(SERVICE_NAMES.OLLAMA)
@@ -71,7 +73,7 @@ export default function BenchmarkPage(props: {
         refetchLatest()
         setRevealing(true)
       } else {
-        setErrorMsg(message || t('benchmark.failed'))
+        setErrorMsg(localizeServerMessage(message, t) || t('benchmark.failed'))
       }
     },
   })
@@ -109,7 +111,9 @@ export default function BenchmarkPage(props: {
     },
     onError: (error) => {
       setIsRunning(false)
-      setErrorMsg(error.message || t('benchmark.startFailed'))
+      setErrorMsg(
+        localizeServerMessage(error.message, t) || t('benchmark.startFailed')
+      )
     },
   })
 
@@ -167,7 +171,7 @@ export default function BenchmarkPage(props: {
       if (error.status === 409) {
         setSubmitError(t('benchmark.alreadySubmitted'))
       } else {
-        setSubmitError(error.message)
+        setSubmitError(localizeServerMessage(error.message, t))
       }
     },
   })
@@ -199,11 +203,6 @@ export default function BenchmarkPage(props: {
     }
     setShowAIRequiredAlert(false)
     runBenchmark.mutate('full')
-  }
-
-  const formatBytes = (bytes: number) => {
-    const gb = bytes / (1024 * 1024 * 1024)
-    return `${gb.toFixed(1)} GB`
   }
 
   const getScoreColor = (score: number) => {
@@ -639,7 +638,7 @@ export default function BenchmarkPage(props: {
                     icon={<IconServer className="w-6 h-6" />}
                     variant="elevated"
                     data={[
-                      { label: t('benchmark.ram'), value: formatBytes(latestResult.ram_bytes) },
+                      { label: t('benchmark.ram'), value: formatBytes(latestResult.ram_bytes, 1) },
                       { label: t('benchmark.diskType'), value: latestResult.disk_type.toUpperCase() },
                       {
                         label: t('benchmark.gpu'),
@@ -676,9 +675,7 @@ export default function BenchmarkPage(props: {
                       <div>
                         <div className="text-desert-stone-dark">{t('common.date')}</div>
                         <div>
-                          {new Date(
-                            latestResult.created_at as unknown as string
-                          ).toLocaleDateString()}
+                          {formatDate(latestResult.created_at as unknown as string)}
                         </div>
                       </div>
                       <div>
@@ -779,9 +776,7 @@ export default function BenchmarkPage(props: {
                             <div className="flex justify-between">
                               <span className="text-desert-stone-dark">{t('benchmark.runDate')}</span>
                               <span>
-                                {new Date(
-                                  latestResult.created_at as unknown as string
-                                ).toLocaleString()}
+                                {formatDate(latestResult.created_at as unknown as string)}
                               </span>
                             </div>
                             <div className="flex justify-between">
@@ -857,7 +852,10 @@ export default function BenchmarkPage(props: {
                                   })}
                                 </span>
                                 <span className="font-mono">
-                                  {latestResult.memory_ops_per_sec?.toLocaleString()} ops/s
+                                  {latestResult.memory_ops_per_sec != null
+                                    ? formatNumber(latestResult.memory_ops_per_sec)
+                                    : ''}{' '}
+                                  ops/s
                                 </span>
                               </div>
                               <div className="flex justify-between">
@@ -995,9 +993,7 @@ export default function BenchmarkPage(props: {
                                   }`}
                                 >
                                   <td className="p-3">
-                                    {new Date(
-                                      result.created_at as unknown as string
-                                    ).toLocaleDateString()}
+                                    {formatDate(result.created_at as unknown as string)}
                                   </td>
                                   <td className="p-3 capitalize">{result.benchmark_type}</td>
                                   {/*

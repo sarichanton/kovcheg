@@ -1,10 +1,12 @@
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import Uppy from '@uppy/core'
 import '@uppy/core/css/style.min.css'
 import '@uppy/dashboard/css/style.min.css'
 import { useUppyEvent } from '@uppy/react'
 import Dashboard from '@uppy/react/dashboard'
 import classNames from 'classnames'
+import { useT } from '~/i18n/I18nProvider'
+import { getUppyLocale } from '~/lib/uppyLocale'
 import './index.css' // Custom styles for the uploader
 
 interface FileUploaderProps {
@@ -36,9 +38,12 @@ const FileUploader = forwardRef<FileUploaderRef, FileUploaderProps>((props, ref)
     className,
   } = props
 
+  const { locale } = useT()
+
   const [uppy] = useState(() => {
     const uppy = new Uppy({
       debug: true,
+      locale: getUppyLocale(locale),
       restrictions: {
         maxFileSize: maxFileSize,
         minNumberOfFiles: minFiles,
@@ -48,6 +53,10 @@ const FileUploader = forwardRef<FileUploaderRef, FileUploaderProps>((props, ref)
     })
     return uppy
   })
+
+  useEffect(() => {
+    uppy.setOptions({ locale: getUppyLocale(locale) })
+  }, [uppy, locale])
 
   useImperativeHandle(ref, () => ({
     clear: () => {

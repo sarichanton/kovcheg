@@ -15,7 +15,7 @@ function formatElapsed(ms: number): string {
 }
 
 function StageHero({ run }: { run: BenchmarkRunHook }) {
-  const { t } = useT()
+  const { t, formatNumber } = useT()
   const status = run.status
   const heroCard = 'bg-desert-white rounded-lg p-6 border border-desert-stone-light h-full min-h-[240px] flex flex-col'
   const title = 'text-sm font-semibold text-desert-green uppercase tracking-wide mb-4 flex items-center gap-2'
@@ -56,7 +56,10 @@ function StageHero({ run }: { run: BenchmarkRunHook }) {
                   label={
                     run.gpuVramTotalMb !== null
                       ? t('benchmark.live.vramOf', {
-                          size: (run.gpuVramTotalMb / 1024).toFixed(1),
+                          size: formatNumber(run.gpuVramTotalMb / 1024, {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1,
+                          }),
                         })
                       : t('benchmark.live.vram')
                   }

@@ -16,7 +16,7 @@ import { useT } from '~/i18n/I18nProvider'
 export default function SettingsPage(props: {
   system: { info: SystemInformationResponse | undefined }
 }) {
-  const { t } = useT()
+  const { t, formatDate } = useT()
   const { data: info } = useSystemInfo({
     initialData: props.system.info,
   })
@@ -55,7 +55,7 @@ export default function SettingsPage(props: {
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-desert-green mb-2">{t('system.headTitle')}</h1>
             <p className="text-desert-stone-dark">
-              {t('system.subtitle', { date: new Date().toLocaleString() })}
+              {t('system.subtitle', { date: formatDate(new Date()) })}
             </p>
           </div>
           {Number(memoryUsagePercent) > 90 && (
@@ -163,7 +163,9 @@ export default function SettingsPage(props: {
                       { label: t('system.gpuVendor', { prefix }), value: gpu.vendor },
                       {
                         label: t('system.gpuVram', { prefix }),
-                        value: gpu.vram ? `${gpu.vram} MB` : t('common.notAvailable'),
+                        value: gpu.vram
+                          ? formatBytes(gpu.vram * 1024 * 1024, 1)
+                          : t('common.notAvailable'),
                       },
                     ]
                   }).flat()}

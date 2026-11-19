@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotifications } from '~/context/NotificationContext'
 import { useContentAutoUpdateStatus } from '~/hooks/useContentAutoUpdateStatus'
 import { formatBytes } from '~/lib/util'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 const COOLOFF_OPTIONS = [
@@ -21,7 +22,7 @@ const COOLOFF_OPTIONS = [
 const BYTES_PER_GB = 1024 * 1024 * 1024
 
 export default function ContentAutoUpdateSection() {
-  const { t } = useT()
+  const { t, formatDate } = useT()
   const { addNotification } = useNotifications()
   const queryClient = useQueryClient()
   const { data: status, isLoading } = useContentAutoUpdateStatus()
@@ -201,7 +202,7 @@ export default function ContentAutoUpdateSection() {
                   <span className="font-medium">{t('updates.lastRunLabel')}</span>
                   {status.lastResult}
                   {status.lastAttemptAt
-                    ? ` (${new Date(status.lastAttemptAt).toLocaleString()})`
+                    ? ` (${formatDate(status.lastAttemptAt)})`
                     : ''}
                 </>
               )}
@@ -210,7 +211,7 @@ export default function ContentAutoUpdateSection() {
             {status.lastError && (
               <p className="text-desert-red mb-3">
                 <span className="font-medium">{t('updates.lastErrorLabel')}</span>
-                {status.lastError}
+                {localizeServerMessage(status.lastError, t)}
               </p>
             )}
 
@@ -238,7 +239,9 @@ export default function ContentAutoUpdateSection() {
                         {resource.size_bytes ? ` · ${formatBytes(resource.size_bytes)}` : ''}
                       </p>
                       {resource.auto_disabled_reason && (
-                        <p className="text-desert-red mt-0.5">{resource.auto_disabled_reason}</p>
+                        <p className="text-desert-red mt-0.5">
+                          {localizeServerMessage(resource.auto_disabled_reason, t)}
+                        </p>
                       )}
                     </div>
                     <span

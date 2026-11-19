@@ -27,6 +27,7 @@ import LinkTileModal from '~/components/LinkTileModal'
 import { IconPlus, IconPencil, IconTrash, IconExternalLink } from '@tabler/icons-react'
 import { useState } from 'react'
 import { linkTileColor } from '../../constants/link_tile_colors'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 // Maps is a Core Capability (display_order: 4)
@@ -429,7 +430,7 @@ export default function Home(props: {
           setLinkModalOpen(false)
           refreshServices()
         }}
-        showError={(msg) => setLinkError(msg)}
+        showError={(msg) => setLinkError(localizeServerMessage(msg, t))}
       />
     </AppLayout>
   )

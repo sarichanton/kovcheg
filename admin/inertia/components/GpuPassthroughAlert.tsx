@@ -5,6 +5,7 @@ import Input from '~/components/inputs/Input'
 import { useNotifications } from '~/context/NotificationContext'
 import { useModals } from '~/context/ModalContext'
 import api from '~/lib/api'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import type { GpuHealthStatus } from '../../types/system'
 import { useT } from '~/i18n/I18nProvider'
 
@@ -69,7 +70,10 @@ export default function GpuPassthroughAlert({
     } catch (error) {
       addNotification({
         message: t('gpuPassthrough.reinstallFailed', {
-          error: error instanceof Error ? error.message : t('errors.unknown'),
+          error:
+            error instanceof Error
+              ? localizeServerMessage(error.message, t)
+              : t('errors.unknown'),
         }),
         type: 'error',
       })
@@ -181,7 +185,10 @@ function HsaOverrideModal({
     } catch (error) {
       addNotification({
         message: t('gpuPassthrough.saveOverrideFailed', {
-          error: error instanceof Error ? error.message : t('errors.unknown'),
+          error:
+            error instanceof Error
+              ? localizeServerMessage(error.message, t)
+              : t('errors.unknown'),
         }),
         type: 'error',
       })

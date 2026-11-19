@@ -5,6 +5,8 @@ import '@uppy/core/css/style.min.css'
 import '@uppy/dashboard/css/style.min.css'
 import { useEffect, useRef, useState } from 'react'
 import { useT } from '~/i18n/I18nProvider'
+import { getUppyLocale } from '~/lib/uppyLocale'
+import { localizeServerMessage } from '~/lib/serverMessages'
 
 interface ZimUploaderProps {
   onUploadComplete: (added: number) => void
@@ -12,7 +14,7 @@ interface ZimUploaderProps {
 }
 
 export default function ZimUploader({ onUploadComplete, existingFilenames }: ZimUploaderProps) {
-  const { t } = useT()
+  const { t, locale } = useT()
   // Uppy is created once, so its callbacks need the latest translator rather
   // than the one captured on the first render.
   const tRef = useRef(t)
@@ -37,6 +39,7 @@ export default function ZimUploader({ onUploadComplete, existingFilenames }: Zim
 
   const [uppy] = useState(() =>
     new Uppy({
+      locale: getUppyLocale(locale),
       restrictions: {
         maxNumberOfFiles: 5,
         allowedFileTypes: ['.zim'],
@@ -48,12 +51,20 @@ export default function ZimUploader({ onUploadComplete, existingFilenames }: Zim
       getResponseError: (responseText) => {
         try {
           const body = JSON.parse(responseText)
-          if (body?.message) return new Error(body.message)
+          if (body?.message) {
+            return new Error(localizeServerMessage(body.message, tRef.current))
+          }
         } catch {}
         return new Error(tRef.current('zimUploader.uploadFailed'))
       },
     })
   )
+
+  // Uppy is created once; re-apply the locale override when the UI language
+  // changes so Dashboard labels switch without recreating the uploader.
+  useEffect(() => {
+    uppy.setOptions({ locale: getUppyLocale(locale) })
+  }, [uppy, locale])
 
   useEffect(() => {
     const handleFileAdded = (file: { id: string; name: string }) => {

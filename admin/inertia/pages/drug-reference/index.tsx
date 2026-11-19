@@ -23,6 +23,7 @@ import type { DrugSearchResult, DrugIngestStatus } from '../../../types/drug_ref
 import type { ConditionSummary, ConditionDrugsResult, NaturalRemedy } from '../../../types/conditions'
 import { remedySourceName } from '../../../util/conditions'
 import { PRODUCT_TYPES } from '../../../types/drug_reference'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 interface PageProps {
@@ -247,7 +248,11 @@ export default function DrugReferenceIndex({
         setDrugResults(append ? (prev) => [...prev, ...next] : next)
         setHasMore(next.length === LIMIT)
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('drugReference.searchFailed'))
+        setError(
+          err instanceof Error
+            ? localizeServerMessage(err.message, t)
+            : t('drugReference.searchFailed')
+        )
       } finally {
         setDrugLoading(false)
       }
@@ -327,7 +332,11 @@ export default function DrugReferenceIndex({
           },
         }))
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('drugReference.searchFailed'))
+        setError(
+          err instanceof Error
+            ? localizeServerMessage(err.message, t)
+            : t('drugReference.searchFailed')
+        )
         setSitResults((prev) => ({ ...prev, [c.slug]: { label: c.label, drugs: [], remedies: [], loading: false } }))
       }
     },

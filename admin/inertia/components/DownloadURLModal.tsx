@@ -2,6 +2,7 @@ import { useState } from 'react'
 import StyledModal, { StyledModalProps } from './StyledModal'
 import Input from './inputs/Input'
 import api from '~/lib/api'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 export type DownloadURLModalProps = Omit<
@@ -17,7 +18,7 @@ const DownloadURLModal: React.FC<DownloadURLModalProps> = ({
   onPreflightSuccess,
   ...modalProps
 }) => {
-  const { t } = useT()
+  const { t, formatNumber } = useT()
   const [url, setUrl] = useState<string>('')
   const [messages, setMessages] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -39,7 +40,10 @@ const DownloadURLModal: React.FC<DownloadURLModalProps> = ({
         ...prev,
         t('downloadURLModal.passed', {
           filename: res.filename,
-          size: (res.size / (1024 * 1024)).toFixed(2),
+          size: formatNumber(res.size / (1024 * 1024), {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
         }),
       ])
 
@@ -50,7 +54,12 @@ const DownloadURLModal: React.FC<DownloadURLModalProps> = ({
       console.error('Preflight check failed:', error)
       setMessages((prev) => [
         ...prev,
-        t('downloadURLModal.failed', { error: error.message }),
+        t('downloadURLModal.failed', {
+          error:
+            error instanceof Error
+              ? localizeServerMessage(error.message, t)
+              : String(error),
+        }),
       ])
     } finally {
       setLoading(false)

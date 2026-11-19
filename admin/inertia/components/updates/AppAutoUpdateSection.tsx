@@ -4,10 +4,11 @@ import api from '~/lib/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotifications } from '~/context/NotificationContext'
 import { useAppAutoUpdateStatus } from '~/hooks/useAppAutoUpdateStatus'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 export default function AppAutoUpdateSection() {
-  const { t } = useT()
+  const { t, formatDate } = useT()
   const { addNotification } = useNotifications()
   const queryClient = useQueryClient()
   const { data: status, isLoading } = useAppAutoUpdateStatus()
@@ -58,9 +59,9 @@ export default function AppAutoUpdateSection() {
                 <>
                   {' '}
                   <span className="font-medium">{t('updates.lastRunLabel')}</span>
-                  {status.lastResult}
+                  {localizeServerMessage(status.lastResult, t)}
                   {status.lastAttemptAt
-                    ? ` (${new Date(status.lastAttemptAt).toLocaleString()})`
+                    ? ` (${formatDate(status.lastAttemptAt)})`
                     : ''}
                 </>
               )}
@@ -86,7 +87,9 @@ export default function AppAutoUpdateSection() {
                           : t('updates.upToDateSuffix')}
                       </p>
                       {app.auto_disabled_reason && (
-                        <p className="text-desert-red mt-0.5">{app.auto_disabled_reason}</p>
+                        <p className="text-desert-red mt-0.5">
+                          {localizeServerMessage(app.auto_disabled_reason, t)}
+                        </p>
                       )}
                     </div>
                     <span
@@ -94,7 +97,7 @@ export default function AppAutoUpdateSection() {
                         app.eligible ? 'text-desert-green' : 'text-desert-stone'
                       }`}
                     >
-                      {app.reason}
+                      {localizeServerMessage(app.reason, t)}
                     </span>
                   </li>
                 ))}

@@ -184,6 +184,23 @@ export function setStoredLocale(locale: Locale): void {
   writeStorage(LOCALE_STORAGE_KEY, locale)
 }
 
+/**
+ * The locale currently selected in the UI. Kept in module state so helpers
+ * outside React (formatBytes, localizeServerMessage, …) can follow the
+ * provider without threading a locale argument through every call site.
+ * I18nProvider keeps this in sync via setCurrentLocale.
+ */
+let currentLocale: Locale = getStoredLocale()
+
+export function getCurrentLocale(): Locale {
+  return currentLocale
+}
+
+export function setCurrentLocale(locale: Locale): void {
+  if (!isLocale(locale)) return
+  currentLocale = locale
+}
+
 /** Keep the <html lang="…"> attribute in sync with the selected locale. */
 export function applyLocaleToDocument(locale: Locale): void {
   try {

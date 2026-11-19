@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 export default function ServerError(props: { error: any }) {
@@ -10,7 +11,7 @@ export default function ServerError(props: { error: any }) {
       <div className="container">
         <div className="title">{t('errors.serverErrorTitle')}</div>
 
-        <span>{props.error.message}</span>
+        <span>{localizeServerMessage(props.error?.message, t)}</span>
       </div>
     </>
   )

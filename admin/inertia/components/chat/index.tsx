@@ -6,6 +6,7 @@ import KbPolicyPromptBanner from './KbPolicyPromptBanner'
 import StyledModal from '../StyledModal'
 import api from '~/lib/api'
 import { formatBytes } from '~/lib/util'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useModals } from '~/context/ModalContext'
 import { ChatImageAttachment, ChatMessage } from '../../../types/chat'
 import classNames from '~/lib/classNames'
@@ -535,7 +536,7 @@ export default function Chat({
                   role: 'assistant',
                   content:
                     error instanceof Error
-                      ? error.message
+                      ? localizeServerMessage(error.message, t)
                       : t('chat.errors.requestFailed'),
                   timestamp: new Date(),
                 },

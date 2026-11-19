@@ -7,6 +7,7 @@ import IngestStatus from '~/components/drug-reference/IngestStatus'
 import { IconAlertTriangle, IconArrowLeft } from '@tabler/icons-react'
 import type { DrugSearchResult, DrugIngestStatus, DrugInteractionEntry } from '../../../types/drug_reference'
 import { MAX_COMPARE, parseCompareIds } from '../../../util/compare_ids'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 interface PageProps {
@@ -95,7 +96,11 @@ export default function DrugReferenceInteractions({ ingestStatus, rowCount }: Pa
       setPickerResults(json.results ?? [])
       setPickerSearched(true)
     } catch (err) {
-      setPickerError(err instanceof Error ? err.message : t('drugReference.searchFailed'))
+      setPickerError(
+        err instanceof Error
+          ? localizeServerMessage(err.message, t)
+          : t('drugReference.searchFailed')
+      )
     } finally {
       setPickerLoading(false)
     }

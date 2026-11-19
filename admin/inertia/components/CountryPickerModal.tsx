@@ -6,6 +6,7 @@ import LoadingSpinner from './LoadingSpinner'
 import api from '~/lib/api'
 import { formatBytes } from '~/lib/util'
 import classNames from '~/lib/classNames'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 import {
   EXTRACT_DEFAULT_MAX_ZOOM,
@@ -165,7 +166,9 @@ const CountryPickerModal: React.FC<CountryPickerModalProps> = ({
       } catch (err: any) {
         if (requestId !== preflightRequestIdRef.current) return
         console.error('Preflight failed:', err)
-        setErrorMessage(err?.message ?? t('countryPicker.estimateFailed'))
+        setErrorMessage(
+          localizeServerMessage(err?.message, t) || t('countryPicker.estimateFailed')
+        )
       } finally {
         if (requestId === preflightRequestIdRef.current) setLoading(false)
       }
@@ -194,7 +197,9 @@ const CountryPickerModal: React.FC<CountryPickerModalProps> = ({
       onDownloadStart?.()
     } catch (err: any) {
       console.error('Extract dispatch failed:', err)
-      setErrorMessage(err?.message ?? t('countryPicker.downloadFailed'))
+      setErrorMessage(
+        localizeServerMessage(err?.message, t) || t('countryPicker.downloadFailed')
+      )
     } finally {
       setDownloading(false)
     }

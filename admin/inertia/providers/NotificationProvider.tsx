@@ -1,13 +1,25 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { NotificationContext, Notification } from '../context/NotificationContext'
 import { IconExclamationCircle, IconCircleCheck, IconInfoCircle } from '@tabler/icons-react'
 import { setGlobalNotificationCallback } from '~/lib/util'
+import { useT } from '~/i18n/I18nProvider'
+import { localizeServerMessage } from '~/lib/serverMessages'
 
 const NotificationsProvider = ({ children }: { children: React.ReactNode }) => {
   const [notifications, setNotifications] = useState<(Notification & { id: string })[]>([])
+  const { t } = useT()
+  // addNotification is also exposed through a global callback created once, so
+  // keep the latest translator in a ref instead of capturing the first one.
+  const tRef = useRef(t)
+  useEffect(() => {
+    tRef.current = t
+  }, [t])
 
   const addNotification = (newNotif: Notification) => {
-    const { message, type, duration = 5000 } = newNotif
+    const { type, duration = 5000 } = newNotif
+    // Server controllers send English strings; translate the known ones and
+    // pass unknown diagnostics through unchanged.
+    const message = localizeServerMessage(newNotif.message, tRef.current)
     const id = crypto.randomUUID()
     setNotifications((prev) => [...prev, { id, message, type, duration }])
 

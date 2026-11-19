@@ -17,6 +17,7 @@ import { useTransmit } from 'react-adonis-transmit'
 import { BROADCAST_CHANNELS } from '../../../constants/broadcast'
 import { IconArrowUp, IconCheck, IconDownload } from '@tabler/icons-react'
 import UpdateServiceModal from '~/components/UpdateServiceModal'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 function extractTag(containerImage: string): string {
@@ -90,7 +91,9 @@ export default function SettingsPage(props: { system: { services: ServiceSlim[] 
     } catch (error) {
       console.error('Error checking for updates:', error)
       showError(
-        t('apps.checkFailed', { error: error.message || t('errors.unknown') })
+        t('apps.checkFailed', {
+          error: localizeServerMessage(error.message, t) || t('errors.unknown'),
+        })
       )
       setCheckingUpdates(false)
     }
@@ -138,7 +141,11 @@ export default function SettingsPage(props: { system: { services: ServiceSlim[] 
       }
     } catch (error) {
       console.error('Error installing service:', error)
-      showError(t('apps.installFailed', { error: error.message || t('errors.unknown') }))
+      showError(
+        t('apps.installFailed', {
+          error: localizeServerMessage(error.message, t) || t('errors.unknown'),
+        })
+      )
     } finally {
       setIsInstalling(false)
     }
@@ -166,7 +173,7 @@ export default function SettingsPage(props: { system: { services: ServiceSlim[] 
       showError(
         t('apps.affectFailed', {
           action: actionVerb(action),
-          error: error.message || t('errors.unknown'),
+          error: localizeServerMessage(error.message, t) || t('errors.unknown'),
         })
       )
     }
@@ -193,7 +200,7 @@ export default function SettingsPage(props: { system: { services: ServiceSlim[] 
       console.error(`Error force reinstalling service ${record.service_name}:`, error)
       showError(
         t('apps.forceReinstallFailed', {
-          error: error.message || t('errors.unknown'),
+          error: localizeServerMessage(error.message, t) || t('errors.unknown'),
         })
       )
     }
@@ -225,7 +232,9 @@ export default function SettingsPage(props: { system: { services: ServiceSlim[] 
           } catch (error) {
             console.error(`Error updating service ${record.service_name}:`, error)
             showError(
-              t('apps.updateFailed', { error: error.message || t('errors.unknown') })
+              t('apps.updateFailed', {
+                error: localizeServerMessage(error.message, t) || t('errors.unknown'),
+              })
             )
             setUpdatingServices((prev) => {
               const next = new Set(prev)

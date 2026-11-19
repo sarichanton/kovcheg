@@ -56,7 +56,7 @@ type BrowseResult = {
 }
 
 export default function ZimRemoteExplorer() {
-  const { t } = useT()
+  const { t, formatDate, formatNumber } = useT()
   const queryClient = useQueryClient()
   const tableParentRef = useRef<HTMLDivElement>(null)
 
@@ -703,9 +703,9 @@ export default function ZimRemoteExplorer() {
                     accessor: 'updated',
                     title: t('common.updated'),
                     render(record) {
-                      return new Intl.DateTimeFormat('en-US', {
+                      return formatDate(record.updated, {
                         dateStyle: 'medium',
-                      }).format(new Date(record.updated))
+                      })
                     },
                   },
                   {
@@ -776,7 +776,7 @@ export default function ZimRemoteExplorer() {
                                 {t('zimExplorer.details.articles')}:{' '}
                               </span>
                               <span className="text-text-primary">
-                                {record.article_count.toLocaleString()}
+                                {formatNumber(record.article_count)}
                               </span>
                             </div>
                           )}
@@ -786,7 +786,7 @@ export default function ZimRemoteExplorer() {
                                 {t('zimExplorer.details.media')}:{' '}
                               </span>
                               <span className="text-text-primary">
-                                {record.media_count.toLocaleString()}
+                                {formatNumber(record.media_count)}
                               </span>
                             </div>
                           )}
@@ -796,9 +796,9 @@ export default function ZimRemoteExplorer() {
                                 {t('zimExplorer.details.issued')}:{' '}
                               </span>
                               <span className="text-text-primary">
-                                {new Intl.DateTimeFormat('en-US', {
+                                {formatDate(issuedDate!, {
                                   dateStyle: 'medium',
-                                }).format(issuedDate!)}
+                                })}
                               </span>
                             </div>
                           )}

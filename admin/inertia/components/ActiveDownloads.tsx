@@ -14,16 +14,27 @@ interface ActiveDownloadProps {
 
 function formatSpeed(
   bytesPerSec: number,
-  t: (key: TranslateKey, params?: TranslationParams) => string
+  t: (key: TranslateKey, params?: TranslationParams) => string,
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string
 ): string {
   if (bytesPerSec <= 0) return t('activeDownloads.speedZero')
   if (bytesPerSec < 1024) {
-    return t('activeDownloads.speedBytes', { value: Math.round(bytesPerSec) })
+    return t('activeDownloads.speedBytes', { value: formatNumber(Math.round(bytesPerSec)) })
   }
   if (bytesPerSec < 1024 * 1024) {
-    return t('activeDownloads.speedKb', { value: (bytesPerSec / 1024).toFixed(1) })
+    return t('activeDownloads.speedKb', {
+      value: formatNumber(bytesPerSec / 1024, {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      }),
+    })
   }
-  return t('activeDownloads.speedMb', { value: (bytesPerSec / (1024 * 1024)).toFixed(1) })
+  return t('activeDownloads.speedMb', {
+    value: formatNumber(bytesPerSec / (1024 * 1024), {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    }),
+  })
 }
 
 type DownloadStatus = 'queued' | 'active' | 'stalled' | 'failed'
@@ -45,7 +56,7 @@ function getDownloadStatus(download: {
 }
 
 const ActiveDownloads = ({ filetype, withHeader = false }: ActiveDownloadProps) => {
-  const { t } = useT()
+  const { t, formatNumber } = useT()
   const { data: downloads, invalidate } = useDownloads({ filetype })
   const [cancellingJobs, setCancellingJobs] = useState<Set<string>>(new Set())
   const [confirmingCancel, setConfirmingCancel] = useState<string | null>(null)
@@ -298,7 +309,7 @@ const ActiveDownloads = ({ filetype, withHeader = false }: ActiveDownloadProps) 
                           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                           <span className="text-xs text-text-muted">
                             {t('activeDownloads.downloading')}
-                            {speed > 0 ? ` ${formatSpeed(speed, t)}` : ''}
+                            {speed > 0 ? ` ${formatSpeed(speed, t, formatNumber)}` : ''}
                           </span>
                         </>
                       )}

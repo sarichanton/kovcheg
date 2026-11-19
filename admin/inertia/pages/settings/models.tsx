@@ -24,6 +24,7 @@ import useDebounce from '~/hooks/useDebounce'
 import ActiveModelDownloads from '~/components/ActiveModelDownloads'
 import { useSystemInfo } from '~/hooks/useSystemInfo'
 import GpuPassthroughAlert from '~/components/GpuPassthroughAlert'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 import type { TranslateKey } from '~/i18n'
 
@@ -76,9 +77,10 @@ export default function ModelsPage(props: {
       }
     } catch (error: any) {
       const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        t('models.remoteOllamaConfigureFailed')
+        localizeServerMessage(
+          error?.response?.data?.message || error?.message,
+          t
+        ) || t('models.remoteOllamaConfigureFailed')
       setRemoteOllamaError(msg)
     } finally {
       setRemoteOllamaSaving(false)
@@ -96,7 +98,9 @@ export default function ModelsPage(props: {
         router.reload()
       }
     } catch (error: any) {
-      setRemoteOllamaError(error?.message || t('models.remoteOllamaClearFailed'))
+      setRemoteOllamaError(
+        localizeServerMessage(error?.message, t) || t('models.remoteOllamaClearFailed')
+      )
     } finally {
       setRemoteOllamaSaving(false)
     }

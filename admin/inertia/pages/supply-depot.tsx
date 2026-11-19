@@ -46,6 +46,7 @@ import { getSupplyDepotDocLink } from '../../constants/supply_depot_docs'
 import api from '~/lib/api'
 import { toTitleCase } from '../../app/utils/misc'
 import { SERVICE_NAMES } from '../../constants/service_names'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 function extractTag(containerImage: string): string {
@@ -294,7 +295,11 @@ export default function SupplyDepotPage(props: { system: { services: ServiceSlim
       const response = await api.checkServiceUpdates()
       if (!response?.success) throw new Error(response?.message || t('supplyDepot.errors.dispatchUpdates'))
     } catch (error: any) {
-      showError(t('supplyDepot.errors.checkUpdates', { error: error?.message || t('common.unknown') }))
+      showError(
+        t('supplyDepot.errors.checkUpdates', {
+          error: localizeServerMessage(error?.message, t) || t('common.unknown'),
+        })
+      )
       setCheckingUpdates(false)
     }
   }

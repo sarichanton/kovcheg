@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { IconCircleCheck, IconCircleX } from '@tabler/icons-react'
 import classNames from '~/lib/classNames'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 export type InstallActivityFeedProps = {
@@ -46,7 +47,7 @@ export type InstallActivityFeedProps = {
 }
 
 const InstallActivityFeed: React.FC<InstallActivityFeedProps> = ({ activity, className, withHeader = false }) => {
-  const { t } = useT()
+  const { t, formatDate } = useT()
   const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
@@ -85,13 +86,15 @@ const InstallActivityFeed: React.FC<InstallActivityFeedProps> = ({ activity, cla
               </div>
               <p className="flex-auto py-0.5 text-xs/5 text-text-muted">
                 <span className="font-semibold text-text-primary">{activityItem.service_name}</span> -{' '}
-                {activityItem.message || activityItem.type.charAt(0).toUpperCase() + activityItem.type.slice(1)}
+                {activityItem.message
+                  ? localizeServerMessage(activityItem.message, t)
+                  : activityItem.type.charAt(0).toUpperCase() + activityItem.type.slice(1)}
               </p>
               <time
                 dateTime={activityItem.timestamp}
                 className="flex-none py-0.5 text-xs/5 text-text-muted"
               >
-                {activityItem.timestamp}
+                {formatDate(activityItem.timestamp)}
               </time>
             </>
           </li>

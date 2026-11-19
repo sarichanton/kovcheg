@@ -8,6 +8,7 @@ import Switch from '~/components/inputs/Switch'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotifications } from '~/context/NotificationContext'
 import { useAutoUpdateStatus } from '~/hooks/useAutoUpdateStatus'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 const COOLOFF_OPTIONS = [
@@ -18,7 +19,7 @@ const COOLOFF_OPTIONS = [
 ] as const
 
 export default function CoreAutoUpdateSection() {
-  const { t } = useT()
+  const { t, formatDate } = useT()
   const { addNotification } = useNotifications()
   const queryClient = useQueryClient()
   const { data: status, isLoading } = useAutoUpdateStatus()
@@ -173,14 +174,14 @@ export default function CoreAutoUpdateSection() {
                 <span className="font-medium">{t('updates.lastCheckLabel')}</span>
                 {status.lastResult}
                 {status.lastAttemptAt
-                  ? ` (${new Date(status.lastAttemptAt).toLocaleString()})`
+                  ? ` (${formatDate(status.lastAttemptAt)})`
                   : ''}
               </p>
             )}
             {status.lastError && (
               <p className="text-desert-red">
                 <span className="font-medium">{t('updates.lastErrorLabel')}</span>
-                {status.lastError}
+                {localizeServerMessage(status.lastError, t)}
               </p>
             )}
           </div>

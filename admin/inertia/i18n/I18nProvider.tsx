@@ -13,6 +13,7 @@ import {
   formatNumber as formatNumberForLocale,
   getStoredLocale,
   isLocale,
+  setCurrentLocale,
   setStoredLocale,
   translate,
   type Locale,
@@ -34,12 +35,14 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(getStoredLocale)
 
   useEffect(() => {
+    setCurrentLocale(locale)
     applyLocaleToDocument(locale)
   }, [locale])
 
   const setLocale = useCallback((next: Locale) => {
     if (!isLocale(next)) return
     setLocaleState(next)
+    setCurrentLocale(next)
     setStoredLocale(next)
     applyLocaleToDocument(next)
   }, [])

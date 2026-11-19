@@ -11,7 +11,7 @@ export interface ChatMessageBubbleProps {
 }
 
 export default function ChatMessageBubble({ message, onContinue }: ChatMessageBubbleProps) {
-  const { t } = useT()
+  const { t, formatDate } = useT()
 
   return (
     <div
@@ -152,7 +152,7 @@ export default function ChatMessageBubble({ message, onContinue }: ChatMessageBu
           message.role === 'user' ? 'text-white/70' : 'text-text-muted'
         )}
       >
-        {message.timestamp.toLocaleTimeString([], {
+        {formatDate(message.timestamp, {
           hour: '2-digit',
           minute: '2-digit',
         })}

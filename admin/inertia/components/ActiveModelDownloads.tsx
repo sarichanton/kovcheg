@@ -6,8 +6,9 @@ import { IconAlertTriangle, IconLoader2, IconX } from '@tabler/icons-react'
 import api from '~/lib/api'
 import { useModals } from '~/context/ModalContext'
 import { formatBytes } from '~/lib/util'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
-import { translate, type Locale } from '~/i18n'
+import { formatNumber as formatNumberForLocale, translate, type Locale } from '~/i18n'
 
 interface ActiveModelDownloadsProps {
     withHeader?: boolean
@@ -17,16 +18,22 @@ function formatSpeed(bytesPerSec: number, locale: Locale = 'en'): string {
     if (bytesPerSec <= 0) return translate(locale, 'activeModelDownloads.speedZero')
     if (bytesPerSec < 1024) {
         return translate(locale, 'activeModelDownloads.speedBytes', {
-            value: Math.round(bytesPerSec),
+            value: formatNumberForLocale(locale, Math.round(bytesPerSec)),
         })
     }
     if (bytesPerSec < 1024 * 1024) {
         return translate(locale, 'activeModelDownloads.speedKb', {
-            value: (bytesPerSec / 1024).toFixed(1),
+            value: formatNumberForLocale(locale, bytesPerSec / 1024, {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+            }),
         })
     }
     return translate(locale, 'activeModelDownloads.speedMb', {
-        value: (bytesPerSec / (1024 * 1024)).toFixed(1),
+        value: formatNumberForLocale(locale, bytesPerSec / (1024 * 1024), {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1,
+        }),
     })
 }
 
@@ -157,7 +164,9 @@ const ActiveModelDownloads = ({ withHeader = false }: ActiveModelDownloadsProps)
                                             <p className="text-sm font-medium text-text-primary truncate">
                                                 {download.model}
                                             </p>
-                                            <p className="text-xs text-red-600 mt-0.5">{download.error}</p>
+                                            <p className="text-xs text-red-600 mt-0.5">
+                                                {localizeServerMessage(download.error, t)}
+                                            </p>
                                         </div>
                                     </div>
                                 ) : (

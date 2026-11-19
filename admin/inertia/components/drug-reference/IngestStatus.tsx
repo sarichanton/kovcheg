@@ -5,6 +5,8 @@ import type {
   DrugIngestPhaseStatus,
 } from '../../../types/drug_reference'
 import { useT } from '~/i18n/I18nProvider'
+import { localizeServerMessage } from '~/lib/serverMessages'
+import { formatBytes } from '~/lib/util'
 import type { TranslateKey, TranslationParams } from '~/i18n'
 
 type TFn = (key: TranslateKey, params?: TranslationParams) => string
@@ -39,14 +41,10 @@ function fmtDuration(ms: number, t: TFn): string {
   return t('drugReference.durationSeconds', { seconds: sec })
 }
 
-/** Format a byte count as "128 MB" / "1.7 GB". */
-function fmtBytes(bytes: number, t: TFn): string {
+/** Format a byte count as "128 MB" / "1.7 GB" in the active locale. */
+function fmtBytes(bytes: number): string {
   if (!isFinite(bytes) || bytes <= 0) return ''
-  const mb = bytes / (1024 * 1024)
-  if (mb >= 1024) {
-    return t('drugReference.sizeGb', { value: (mb / 1024).toFixed(1) })
-  }
-  return t('drugReference.sizeMb', { value: Math.round(mb) })
+  return formatBytes(bytes, 1)
 }
 
 /** One phase block: headline, explainer, progress bar, optional timing row. */
@@ -201,7 +199,7 @@ export default function IngestStatus({ status, onRefresh, pollIntervalMs = 3000 
       : download.totalParts > 0
         ? Math.min(100, Math.round((download.partsDone / download.totalParts) * 100))
         : 0
-  const dlBytes = download.bytesDownloaded ? fmtBytes(download.bytesDownloaded, t) : ''
+  const dlBytes = download.bytesDownloaded ? fmtBytes(download.bytesDownloaded) : ''
 
   // ── Ingest bar (records-based) ───────────────────────────────────────────
   const expected = ingest.expectedTotal > 0 ? ingest.expectedTotal : 0
@@ -252,7 +250,7 @@ export default function IngestStatus({ status, onRefresh, pollIntervalMs = 3000 
         explainer={downloadExplainer(download, t)}
         accentRunning="text-blue-700"
         timing={downloadTiming}
-        failedReason={download.failedReason}
+        failedReason={localizeServerMessage(download.failedReason, t)}
       />
 
       {/* Ingest phase */}
@@ -275,7 +273,7 @@ export default function IngestStatus({ status, onRefresh, pollIntervalMs = 3000 
           ) : undefined
         }
         timing={ingestTiming}
-        failedReason={ingest.failedReason}
+        failedReason={localizeServerMessage(ingest.failedReason, t)}
       />
 
       {/* Reassurance while busy */}

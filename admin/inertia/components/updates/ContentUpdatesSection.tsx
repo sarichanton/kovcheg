@@ -9,10 +9,11 @@ import api from '~/lib/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNotifications } from '~/context/NotificationContext'
 import { formatBytes } from '~/lib/util'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 export default function ContentUpdatesSection() {
-  const { t } = useT()
+  const { t, formatDate } = useT()
   const { addNotification } = useNotifications()
   const queryClient = useQueryClient()
   const [checkResult, setCheckResult] = useState<ContentUpdateCheckResult | null>(null)
@@ -135,7 +136,7 @@ export default function ContentUpdatesSection() {
           <Alert
             type="warning"
             title={t('updates.manual.checkIssue')}
-            message={checkResult.error}
+            message={localizeServerMessage(checkResult.error, t)}
             variant="bordered"
             className="my-4"
           />
@@ -232,7 +233,7 @@ export default function ContentUpdatesSection() {
         {checkResult?.checked_at && (
           <p className="text-xs text-desert-stone mt-3">
             {t('updates.manual.lastChecked', {
-              date: new Date(checkResult.checked_at).toLocaleString(),
+              date: formatDate(checkResult.checked_at),
             })}
           </p>
         )}

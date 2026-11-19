@@ -8,6 +8,7 @@ import Input from '~/components/inputs/Input'
 import { useNotifications } from '~/context/NotificationContext'
 import { useMutation } from '@tanstack/react-query'
 import api from '~/lib/api'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 export default function AdvancedPage(props: {
@@ -48,10 +49,10 @@ export default function AdvancedPage(props: {
       addNotification({ message: t('advanced.settingUpdated'), type: 'success' })
     },
     onError: (error: any) => {
-      const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        t('advanced.settingUpdateFailed')
+      const msg = localizeServerMessage(
+        error?.response?.data?.message || error?.message,
+        t
+      ) || t('advanced.settingUpdateFailed')
       setTestUrlError(msg)
       addNotification({ message: msg, type: 'error' })
     },

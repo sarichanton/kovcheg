@@ -16,6 +16,7 @@ import CoreAutoUpdateSection from '~/components/updates/CoreAutoUpdateSection'
 import AppAutoUpdateSection from '~/components/updates/AppAutoUpdateSection'
 import ContentAutoUpdateSection from '~/components/updates/ContentAutoUpdateSection'
 import ContentUpdatesSection from '~/components/updates/ContentUpdatesSection'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { useT } from '~/i18n/I18nProvider'
 
 type Props = {
@@ -107,7 +108,7 @@ export default function SystemUpdatePage(props: { system: Props }) {
           }, 2000)
         } else if (response.stage === 'error') {
           setIsUpdating(false)
-          setError(response.message)
+          setError(localizeServerMessage(response.message, t))
         }
       } catch (err) {
         // During container restart, we'll lose connection - this is expected
@@ -132,7 +133,10 @@ export default function SystemUpdatePage(props: { system: Props }) {
       }
     } catch (err: any) {
       setIsUpdating(false)
-      setError(err.response?.data?.error || err.message || t('updates.startFailed'))
+      setError(
+        localizeServerMessage(err.response?.data?.error || err.message, t) ||
+          t('updates.startFailed')
+      )
     }
   }
 
@@ -171,7 +175,8 @@ export default function SystemUpdatePage(props: { system: Props }) {
       }
     },
     onError: (error: any) => {
-      const errorMessage = error?.message || t('updates.checkFailed')
+      const errorMessage =
+        localizeServerMessage(error?.message, t) || t('updates.checkFailed')
       setError(errorMessage)
       addNotification({ type: 'error', message: errorMessage })
     },
@@ -222,7 +227,7 @@ export default function SystemUpdatePage(props: { system: Props }) {
         addNotification({
           type: 'error',
           message: t('updates.subscribeFailed', {
-            error: data?.message || t('errors.unknown'),
+            error: localizeServerMessage(data?.message, t) || t('errors.unknown'),
           }),
         })
       }
@@ -231,7 +236,7 @@ export default function SystemUpdatePage(props: { system: Props }) {
       addNotification({
         type: 'error',
         message: t('updates.subscribeError', {
-          error: error.message || t('errors.unknown'),
+          error: localizeServerMessage(error.message, t) || t('errors.unknown'),
         }),
       })
     },
@@ -305,7 +310,9 @@ export default function SystemUpdatePage(props: { system: Props }) {
                   <h2 className="text-2xl font-bold text-desert-green mb-2">
                     {t(STAGE_LABELS[updateStatus.stage] ?? updateStatus.stage)}
                   </h2>
-                  <p className="text-desert-stone-dark mb-6">{updateStatus.message}</p>
+                  <p className="text-desert-stone-dark mb-6">
+                    {localizeServerMessage(updateStatus.message, t)}
+                  </p>
                 </>
               )}
 

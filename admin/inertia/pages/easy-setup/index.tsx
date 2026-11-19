@@ -22,6 +22,7 @@ import { getPrimaryDiskInfo } from '~/hooks/useDiskDisplayData'
 import classNames from 'classnames'
 import type { CategoryWithStatus, SpecTier, SpecResource } from '../../../types/collections'
 import { resolveTierResources } from '~/lib/collections'
+import { localizeServerMessage } from '~/lib/serverMessages'
 import { SERVICE_NAMES } from '../../../constants/service_names'
 import { useT } from '~/i18n/I18nProvider'
 import type { TranslateKey, TranslationParams } from '~/i18n'
@@ -113,7 +114,7 @@ const WIKIPEDIA_STATE_KEY = 'wikipedia-state'
 export default function EasySetupWizard(props: {
   system: { services: ServiceSlim[]; remoteOllamaUrl: string }
 }) {
-  const { t } = useT()
+  const { t, formatNumber } = useT()
   const { aiAssistantName } = usePage<{ aiAssistantName: string }>().props
   const CORE_CAPABILITIES = buildCoreCapabilities(aiAssistantName, t)
 
@@ -410,7 +411,9 @@ export default function EasySetupWizard(props: {
       if (remoteOllamaEnabled && remoteOllamaUrl) {
         const remoteResult = await api.configureRemoteOllama(remoteOllamaUrl)
         if (!remoteResult?.success) {
-          const msg = (remoteResult as any)?.message || t('easySetup.notifications.remoteOllamaFailed')
+          const msg =
+            localizeServerMessage((remoteResult as any)?.message, t) ||
+            t('easySetup.notifications.remoteOllamaFailed')
           setRemoteOllamaUrlError(msg)
           setIsProcessing(false)
           setCurrentStep(1)
@@ -1357,7 +1360,10 @@ export default function EasySetupWizard(props: {
                       <span className="text-text-muted text-sm">
                         {option.size_mb > 0
                           ? t('easySetup.review.sizeGb', {
-                              size: (option.size_mb / 1024).toFixed(1),
+                              size: formatNumber(option.size_mb / 1024, {
+                                minimumFractionDigits: 1,
+                                maximumFractionDigits: 1,
+                              }),
                             })
                           : t('common.noDownload')}
                       </span>

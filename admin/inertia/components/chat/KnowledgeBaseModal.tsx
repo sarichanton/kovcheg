@@ -201,7 +201,7 @@ export default function KnowledgeBaseModal({
   aiAssistantName: aiAssistantNameProp,
   onClose,
 }: KnowledgeBaseModalProps) {
-  const { t, locale } = useT()
+  const { t, locale, formatDate, formatNumber } = useT()
   const { addNotification } = useNotifications()
   const aiAssistantName = aiAssistantNameProp?.trim() || t('common.aiAssistant')
   const [files, setFiles] = useState<File[]>([])
@@ -917,8 +917,8 @@ export default function KnowledgeBaseModal({
                                 {w.kind === 'partial_stall' && (
                                   <span>
                                     {t('knowledgeBase.warnings.partialStall', {
-                                      embedded: w.chunksEmbedded.toLocaleString(),
-                                      expected: w.chunksExpected.toLocaleString(),
+                                      embedded: formatNumber(w.chunksEmbedded),
+                                      expected: formatNumber(w.chunksExpected),
                                     })}
                                   </span>
                                 )}
@@ -957,7 +957,7 @@ export default function KnowledgeBaseModal({
                     const d = new Date(record.uploadedAt)
                     return (
                       <span className="text-text-secondary" title={d.toISOString()}>
-                        {d.toLocaleDateString()}
+                        {formatDate(d)}
                       </span>
                     )
                   },
