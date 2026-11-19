@@ -1,6 +1,7 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { IconAlertTriangle } from '@tabler/icons-react'
 import StyledButton from '~/components/StyledButton'
+import { useT } from '~/i18n/I18nProvider'
 
 /**
  * localStorage key for the Drug Reference disclaimer acknowledgement. Versioned:
@@ -25,6 +26,7 @@ export function hasAcknowledgedDrugDisclaimer(): boolean {
  * this browser — other browsers/devices see it on their first open.
  */
 export default function DrugDisclaimerModal({ open, onAcknowledge }: { open: boolean; onAcknowledge: () => void }) {
+  const { t } = useT()
   const acknowledge = () => {
     try {
       window.localStorage.setItem(DRUG_DISCLAIMER_ACK_KEY, 'ack')
@@ -45,44 +47,51 @@ export default function DrugDisclaimerModal({ open, onAcknowledge }: { open: boo
                 <IconAlertTriangle size={26} />
               </span>
               <DialogTitle as="h3" className="mt-4 text-lg font-bold text-text-primary">
-                Before you use the Drug Reference
+                {t('drugReference.disclaimer.title')}
               </DialogTitle>
             </div>
 
             <div className="mt-4 space-y-3 text-sm text-text-secondary">
               <p>
-                This tool shows general health information from official <strong>FDA drug labels</strong> and
-                matches symptoms to over-the-counter options. It is provided for <strong>information only</strong>.
+                {t('drugReference.disclaimer.intro')}{' '}
+                <strong>{t('drugReference.disclaimer.fdaLabels')}</strong>{' '}
+                {t('drugReference.disclaimer.afterLabels')}{' '}
+                <strong>{t('drugReference.disclaimer.informationOnly')}</strong>
+                {t('drugReference.disclaimer.sentenceEnd')}
               </p>
               <ul className="list-disc space-y-1.5 pl-5">
                 <li>
-                  It is <strong>not medical advice</strong> and not a substitute for a doctor, pharmacist, or nurse.
+                  {t('drugReference.disclaimer.adviceBefore')}{' '}
+                  <strong>{t('drugReference.disclaimer.notMedicalAdvice')}</strong>{' '}
+                  {t('drugReference.disclaimer.adviceAfter')}
                 </li>
                 <li>
-                  It is <strong>not a drug-interaction checker</strong>. Always read each product&rsquo;s full label
-                  and check with a professional before combining medicines.
+                  {t('drugReference.disclaimer.checkerBefore')}{' '}
+                  <strong>{t('drugReference.disclaimer.notInteractionChecker')}</strong>
+                  {t('drugReference.disclaimer.checkerAfter')}
                 </li>
                 <li>
-                  Situation matches come from label text, not clinical recommendations — they can be incomplete or
-                  include products you wouldn&rsquo;t expect.
+                  {t('drugReference.disclaimer.situationMatches')}
                 </li>
                 <li>
-                  Always follow the directions on the <strong>actual product you have</strong>; dosages and warnings
-                  differ between products.
+                  {t('drugReference.disclaimer.followDirectionsBefore')}{' '}
+                  <strong>{t('drugReference.disclaimer.actualProduct')}</strong>
+                  {t('drugReference.disclaimer.followDirectionsAfter')}
                 </li>
                 <li>
-                  In an emergency, or if symptoms are severe, worsening, or you&rsquo;re unsure,{' '}
-                  <strong>contact a medical professional or call emergency services</strong>.
+                  {t('drugReference.disclaimer.emergencyBefore')}{' '}
+                  <strong>{t('drugReference.disclaimer.emergencyAction')}</strong>
+                  {t('drugReference.disclaimer.emergencyAfter')}
                 </li>
               </ul>
               <p className="text-xs text-text-muted">
-                Data is from openFDA (U.S. FDA, public domain). NOMAD is not affiliated with or endorsed by the FDA.
+                {t('drugReference.disclaimer.dataNote')}
               </p>
             </div>
 
             <div className="mt-6">
               <StyledButton variant="action" fullWidth onClick={acknowledge}>
-                I understand — continue
+                {t('drugReference.disclaimer.acknowledge')}
               </StyledButton>
             </div>
           </DialogPanel>

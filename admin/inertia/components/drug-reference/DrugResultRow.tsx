@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react'
 import type { DrugSearchResult } from '../../../types/drug_reference'
 import { PRODUCT_TYPES } from '../../../types/drug_reference'
+import { useT } from '~/i18n/I18nProvider'
 
 interface Props {
   result: DrugSearchResult
@@ -24,6 +25,7 @@ function titleCase(s: string): string {
  * default (drug-first), or the brand when rendered inside an ingredient group.
  */
 export default function DrugResultRow({ result, brandFirst = false }: Props) {
+  const { t } = useT()
   const isRx = result.product_type === PRODUCT_TYPES.RX
   const isOtc = result.product_type === PRODUCT_TYPES.OTC
 
@@ -32,8 +34,8 @@ export default function DrugResultRow({ result, brandFirst = false }: Props) {
 
   // Headline vs sub-line depending on context.
   const headline = brandFirst
-    ? (brand ?? ingredient ?? 'Unknown')
-    : (ingredient ?? brand ?? 'Unknown')
+    ? (brand ?? ingredient ?? t('common.unknown'))
+    : (ingredient ?? brand ?? t('common.unknown'))
   const subParts: string[] = []
   if (brandFirst) {
     if (result.manufacturer) subParts.push(result.manufacturer)
@@ -57,18 +59,18 @@ export default function DrugResultRow({ result, brandFirst = false }: Props) {
 
           {isRx && (
             <span className="px-1.5 py-0.5 rounded text-xs font-semibold bg-desert-orange/10 text-desert-orange-dark border border-desert-orange/30 flex-shrink-0">
-              Rx
+              {t('drugReference.rxBadge')}
             </span>
           )}
           {isOtc && (
             <span className="px-1.5 py-0.5 rounded text-xs font-semibold bg-desert-olive/10 text-desert-olive-dark border border-desert-olive/30 flex-shrink-0">
-              OTC
+              {t('drugReference.otcBadge')}
             </span>
           )}
 
           {result.labelCount > 1 && (
             <span className="px-1.5 py-0.5 rounded text-xs bg-surface-secondary text-text-secondary flex-shrink-0">
-              {result.labelCount} labels
+              {t('drugReference.labels', { count: result.labelCount })}
             </span>
           )}
         </div>
