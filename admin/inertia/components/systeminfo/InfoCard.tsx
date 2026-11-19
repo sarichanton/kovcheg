@@ -1,4 +1,5 @@
 import classNames from '~/lib/classNames'
+import { useT } from '~/i18n/I18nProvider'
 
 interface InfoCardProps {
   title: string
@@ -11,6 +12,7 @@ interface InfoCardProps {
 }
 
 export default function InfoCard({ title, icon, data, variant = 'default' }: InfoCardProps) {
+  const { t } = useT()
   const getVariantStyles = () => {
     switch (variant) {
       case 'bordered':
@@ -65,7 +67,7 @@ export default function InfoCard({ title, icon, data, variant = 'default' }: Inf
                 {item.label}
               </dt>
               <dd className={classNames('text-sm font-semibold text-right text-desert-green-dark')}>
-                {item.value || 'N/A'}
+                {item.value || t('common.notAvailable')}
               </dd>
             </div>
           ))}

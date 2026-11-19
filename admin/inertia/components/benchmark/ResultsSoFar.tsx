@@ -1,17 +1,19 @@
 import { IconCheck } from '@tabler/icons-react'
 import type { BenchmarkPartialResult } from '../../../types/benchmark'
+import { useT } from '~/i18n/I18nProvider'
 
 /**
  * Horizontal strip of chips that fills in each stage's raw result as stages
  * complete during a live run. Renders nothing until the first result lands.
  */
 export default function ResultsSoFar({ partials }: { partials: BenchmarkPartialResult[] }) {
+  const { t } = useT()
   if (partials.length === 0) return null
 
   return (
     <div className="bg-desert-white rounded-lg p-4 border border-desert-stone-light">
       <div className="text-xs font-semibold text-desert-stone-dark uppercase tracking-wide mb-3">
-        Results so far
+        {t('benchmark.live.resultsSoFar')}
       </div>
       <div className="flex flex-wrap gap-2">
         {partials.map((p) => (

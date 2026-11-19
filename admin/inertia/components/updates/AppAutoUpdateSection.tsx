@@ -4,8 +4,10 @@ import api from '~/lib/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotifications } from '~/context/NotificationContext'
 import { useAppAutoUpdateStatus } from '~/hooks/useAppAutoUpdateStatus'
+import { useT } from '~/i18n/I18nProvider'
 
 export default function AppAutoUpdateSection() {
+  const { t } = useT()
   const { addNotification } = useNotifications()
   const queryClient = useQueryClient()
   const { data: status, isLoading } = useAppAutoUpdateStatus()
@@ -18,37 +20,44 @@ export default function AppAutoUpdateSection() {
       queryClient.invalidateQueries({ queryKey: ['app-auto-update-status'] })
       addNotification({
         type: 'success',
-        message: value ? 'App automatic updates enabled.' : 'App automatic updates disabled.',
+        message: value
+          ? t('updates.apps.enabledNotification')
+          : t('updates.apps.disabledNotification'),
       })
     },
     onError: () => {
-      addNotification({ type: 'error', message: 'Failed to update app auto-update setting.' })
+      addNotification({ type: 'error', message: t('updates.apps.updateSettingFailed') })
     },
   })
 
   return (
     <>
-      <StyledSectionHeader title="Automatic App Updates" className="mt-8" />
+      <StyledSectionHeader title={t('updates.apps.sectionTitle')} className="mt-8" />
       <div className="bg-surface-primary rounded-lg border shadow-md overflow-hidden mt-6 p-6">
         <Switch
           checked={enabled}
           onChange={(value) => toggleMutation.mutate(value)}
           disabled={toggleMutation.isPending || isLoading}
-          label="Enable Automatic App Updates"
-          description="Automatically install minor and patch updates for apps you've opted in (toggle each app in Supply Depot). Major versions always require a manual update. Uses the same update window and cool-off period as the core schedule above."
+          label={t('updates.apps.enableLabel')}
+          description={t('updates.apps.enableDescription')}
         />
 
         {enabled && status && (
           <div className="mt-6 pt-4 border-t border-desert-stone-light text-sm">
             <p className="text-desert-stone mb-3">
-              <span className="font-medium">Update window: </span>
-              {status.windowStart}–{status.windowEnd} (
-              {status.withinWindow ? 'currently inside' : 'currently outside'}); cool-off{' '}
-              {status.cooloffHours}h.
+              <span className="font-medium">{t('updates.windowLabel')}</span>
+              {t('updates.apps.windowSummary', {
+                start: status.windowStart,
+                end: status.windowEnd,
+                state: status.withinWindow
+                  ? t('updates.currentlyInside')
+                  : t('updates.currentlyOutside'),
+                hours: status.cooloffHours,
+              })}
               {status.lastResult && (
                 <>
                   {' '}
-                  <span className="font-medium">Last run: </span>
+                  <span className="font-medium">{t('updates.lastRunLabel')}</span>
                   {status.lastResult}
                   {status.lastAttemptAt
                     ? ` (${new Date(status.lastAttemptAt).toLocaleString()})`
@@ -58,9 +67,7 @@ export default function AppAutoUpdateSection() {
             </p>
 
             {status.apps.length === 0 ? (
-              <p className="text-desert-stone-dark">
-                No apps are opted in yet. Enable auto-update on individual apps from the Supply Depot.
-              </p>
+              <p className="text-desert-stone-dark">{t('updates.apps.noApps')}</p>
             ) : (
               <ul className="space-y-2">
                 {status.apps.map((app) => (
@@ -76,7 +83,7 @@ export default function AppAutoUpdateSection() {
                         {app.current_version}
                         {app.available_update_version
                           ? ` → ${app.available_update_version}`
-                          : ' (up to date)'}
+                          : t('updates.upToDateSuffix')}
                       </p>
                       {app.auto_disabled_reason && (
                         <p className="text-desert-red mt-0.5">{app.auto_disabled_reason}</p>

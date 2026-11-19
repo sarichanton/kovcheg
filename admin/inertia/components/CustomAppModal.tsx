@@ -7,6 +7,7 @@ import Input from './inputs/Input'
 import Select from './inputs/Select'
 import DynamicIcon, { DynamicIconName } from './DynamicIcon'
 import { IconTrash } from '@tabler/icons-react'
+import { useT } from '~/i18n/I18nProvider'
 
 interface PortMapping {
   container: string
@@ -46,34 +47,34 @@ interface CustomAppModalProps {
 }
 
 const CATEGORY_OPTIONS = [
-  { value: 'custom', label: 'Custom' },
-  { value: 'productivity', label: 'Productivity' },
-  { value: 'media', label: 'Media' },
-  { value: 'security', label: 'Security' },
-  { value: 'networking', label: 'Networking' },
-  { value: 'utility', label: 'Utility' },
-  { value: 'ai', label: 'AI' },
-  { value: 'education', label: 'Education' },
-]
+  { value: 'custom', labelKey: 'customAppModal.categories.custom' },
+  { value: 'productivity', labelKey: 'customAppModal.categories.productivity' },
+  { value: 'media', labelKey: 'customAppModal.categories.media' },
+  { value: 'security', labelKey: 'customAppModal.categories.security' },
+  { value: 'networking', labelKey: 'customAppModal.categories.networking' },
+  { value: 'utility', labelKey: 'customAppModal.categories.utility' },
+  { value: 'ai', labelKey: 'customAppModal.categories.ai' },
+  { value: 'education', labelKey: 'customAppModal.categories.education' },
+] as const
 
 // Curated subset of the DynamicIcon map suitable for custom apps.
 const ICON_OPTIONS = [
-  { value: 'IconBrandDocker', label: 'Docker (default)' },
-  { value: 'IconBox', label: 'Box' },
-  { value: 'IconServer', label: 'Server' },
-  { value: 'IconDatabase', label: 'Database' },
-  { value: 'IconCode', label: 'Code' },
-  { value: 'IconTool', label: 'Tool' },
-  { value: 'IconWorld', label: 'Web' },
-  { value: 'IconShieldLock', label: 'Security' },
-  { value: 'IconMovie', label: 'Media' },
-  { value: 'IconBook', label: 'Book' },
-  { value: 'IconNotes', label: 'Notes' },
-  { value: 'IconCpu', label: 'Compute' },
-  { value: 'IconRobot', label: 'AI / Bot' },
-  { value: 'IconWifi', label: 'Network' },
-  { value: 'IconHome', label: 'Home' },
-]
+  { value: 'IconBrandDocker', labelKey: 'customAppModal.icons.docker' },
+  { value: 'IconBox', labelKey: 'customAppModal.icons.box' },
+  { value: 'IconServer', labelKey: 'customAppModal.icons.server' },
+  { value: 'IconDatabase', labelKey: 'customAppModal.icons.database' },
+  { value: 'IconCode', labelKey: 'customAppModal.icons.code' },
+  { value: 'IconTool', labelKey: 'customAppModal.icons.tool' },
+  { value: 'IconWorld', labelKey: 'customAppModal.icons.web' },
+  { value: 'IconShieldLock', labelKey: 'customAppModal.icons.security' },
+  { value: 'IconMovie', labelKey: 'customAppModal.icons.media' },
+  { value: 'IconBook', labelKey: 'customAppModal.icons.book' },
+  { value: 'IconNotes', labelKey: 'customAppModal.icons.notes' },
+  { value: 'IconCpu', labelKey: 'customAppModal.icons.compute' },
+  { value: 'IconRobot', labelKey: 'customAppModal.icons.aiBot' },
+  { value: 'IconWifi', labelKey: 'customAppModal.icons.network' },
+  { value: 'IconHome', labelKey: 'customAppModal.icons.home' },
+] as const
 
 export default function CustomAppModal({
   open,
@@ -83,7 +84,16 @@ export default function CustomAppModal({
   mode = 'create',
   initial = null,
 }: CustomAppModalProps) {
+  const { t } = useT()
   const isEdit = mode === 'edit'
+  const categoryOptions = CATEGORY_OPTIONS.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }))
+  const iconOptions = ICON_OPTIONS.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }))
   const [friendlyName, setFriendlyName] = useState('')
   const [image, setImage] = useState('')
   const [category, setCategory] = useState('custom')
@@ -223,11 +233,11 @@ export default function CustomAppModal({
   // ── Submit ────────────────────────────────────────────────────────────────
   async function handleSubmit() {
     if (!friendlyName.trim() || !image.trim()) {
-      showError('Name and image are required.')
+      showError(t('customAppModal.requiredError'))
       return
     }
     if (blocked.length > 0) {
-      showError('Resolve the blocked issues before installing.')
+      showError(t('customAppModal.blockedError'))
       return
     }
 
@@ -269,11 +279,11 @@ export default function CustomAppModal({
         if (result?.message?.toLowerCase().includes('port') || result?.message?.toLowerCase().includes('conflict')) {
           showError(result.message)
         } else {
-          showError(result?.message || 'Failed to create custom app.')
+          showError(result?.message || t('customAppModal.createFailed'))
         }
       }
     } catch (err: any) {
-      showError(err?.message || 'Unexpected error creating custom app.')
+      showError(err?.message || t('customAppModal.unexpectedError'))
     } finally {
       setSubmitting(false)
     }
@@ -286,13 +296,15 @@ export default function CustomAppModal({
 
   return (
     <StyledModal
-      title={isEdit ? 'Edit App' : 'Add Custom App'}
+      title={isEdit ? t('customAppModal.editTitle') : t('customAppModal.createTitle')}
       open={open}
       onCancel={handleClose}
-      cancelText="Cancel"
+      cancelText={t('common.cancel')}
       onConfirm={handleSubmit}
       confirmVariant='primary'
-      confirmText={isEdit ? 'Save & Recreate' : 'Install'}
+      confirmText={
+        isEdit ? t('customAppModal.saveRecreate') : t('common.install')
+      }
       confirmIcon="IconBrandDocker"
       confirmLoading={submitting}
       confirmDisabled={!canSubmit}
@@ -303,16 +315,16 @@ export default function CustomAppModal({
         <div className="grid grid-cols-2 gap-4">
           <Input
             name='image'
-            label="Docker Image"
-            placeholder="e.g. nginx:latest"
+            label={t('customAppModal.dockerImage')}
+            placeholder={t('customAppModal.imagePlaceholder')}
             value={image}
             onChange={(e) => setImage(e.target.value)}
             required
           />
           <Input
             name='friendlyName'
-            label="Display Name"
-            placeholder="My App"
+            label={t('customAppModal.displayName')}
+            placeholder={t('customAppModal.displayNamePlaceholder')}
             value={friendlyName}
             onChange={(e) => setFriendlyName(e.target.value)}
             required
@@ -323,25 +335,25 @@ export default function CustomAppModal({
         <div className="grid grid-cols-2 gap-4 items-start">
           <Select
             name='category'
-            label='Category'
-            helpText='Select the most relevant category for this app. This helps with visual organization and filtering.'
+            label={t('customAppModal.category')}
+            helpText={t('customAppModal.categoryHelp')}
             value={category}
             onChange={(newVal) => setCategory(newVal)}
-            options={CATEGORY_OPTIONS}
+            options={categoryOptions}
           />
           <div className="flex items-end gap-2">
             <Select
               name='icon'
-              label='Icon'
-              helpText='Pick an icon shown on the app card.'
+              label={t('customAppModal.icon')}
+              helpText={t('customAppModal.iconHelp')}
               value={icon}
               onChange={(newVal) => setIcon(newVal)}
-              options={ICON_OPTIONS}
+              options={iconOptions}
               className="flex-1 min-w-0"
             />
             <div
               className="flex-shrink-0 flex items-center justify-center h-[42px] w-[42px] rounded-md border border-border-default bg-surface-secondary"
-              title="Icon preview"
+              title={t('customAppModal.iconPreview')}
             >
               <DynamicIcon icon={icon as DynamicIconName} className="h-6 w-6 text-desert-green" />
             </div>
@@ -351,11 +363,13 @@ export default function CustomAppModal({
         {/* Port Mappings */}
         <div>
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Port Mappings</label>
-            <StyledButton size="sm" variant="ghost" icon="IconPlus" onClick={addPort}>Add Port</StyledButton>
+            <label className="text-sm font-medium">{t('customAppModal.portMappings')}</label>
+            <StyledButton size="sm" variant="ghost" icon="IconPlus" onClick={addPort}>
+              {t('customAppModal.addPort')}
+            </StyledButton>
           </div>
           {ports.length === 0 && (
-            <p className="text-xs italic">No port mappings — the app won't be accessible from a browser.</p>
+            <p className="text-xs italic">{t('customAppModal.noPorts')}</p>
           )}
           <div className="space-y-2">
             {ports.map((p, idx) => (
@@ -364,7 +378,7 @@ export default function CustomAppModal({
                   name={`containerPort${idx}`}
                   label=''
                   type="number"
-                  placeholder="Container port"
+                  placeholder={t('customAppModal.containerPort')}
                   value={p.container}
                   onChange={(e) => updatePort(idx, 'container', e.target.value)}
                   className='w-full'
@@ -374,7 +388,7 @@ export default function CustomAppModal({
                   name={`hostPort${idx}`}
                   label=''
                   type="number"
-                  placeholder="Host port (8600+)"
+                  placeholder={t('customAppModal.hostPort')}
                   value={p.host}
                   onChange={(e) => updatePort(idx, 'host', e.target.value)}
                   className='w-full'
@@ -389,20 +403,26 @@ export default function CustomAppModal({
               </div>
             ))}
           </div>
-          <p className="text-xs mt-2">Host ports should be in the 8600+ range. Custom apps get ports starting at {suggestedPort ?? 8600}.</p>
+          <p className="text-xs mt-2">
+            {t('customAppModal.portRangeHelp', { port: suggestedPort ?? 8600 })}
+          </p>
           {checkingPreflight && (
-            <p className="text-xs mt-1 italic text-text-muted">Checking port availability…</p>
+            <p className="text-xs mt-1 italic text-text-muted">
+              {t('customAppModal.checkingPorts')}
+            </p>
           )}
         </div>
 
         {/* Volume Mappings */}
         <div>
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Volume Mounts</label>
-            <StyledButton size="sm" variant="ghost" icon="IconPlus" onClick={addVolume}>Add Volume</StyledButton>
+            <label className="text-sm font-medium">{t('customAppModal.volumeMounts')}</label>
+            <StyledButton size="sm" variant="ghost" icon="IconPlus" onClick={addVolume}>
+              {t('customAppModal.addVolume')}
+            </StyledButton>
           </div>
           {volumes.length === 0 && (
-            <p className="text-xs italic">No volumes — data won't persist across restarts.</p>
+            <p className="text-xs italic">{t('customAppModal.noVolumes')}</p>
           )}
           <div className="space-y-2">
             {volumes.map((v, idx) => (
@@ -411,7 +431,7 @@ export default function CustomAppModal({
                   name={`hostPath${idx}`}
                   label=''
                   type="text"
-                  placeholder="Host path (absolute)"
+                  placeholder={t('customAppModal.hostPath')}
                   value={v.host_path}
                   onChange={(e) => updateVolume(idx, 'host_path', e.target.value)}
                   className='w-full'
@@ -421,7 +441,7 @@ export default function CustomAppModal({
                   name={`containerPath${idx}`}
                   label=''
                   type="text"
-                  placeholder="Container path"
+                  placeholder={t('customAppModal.containerPath')}
                   value={v.container_path}
                   onChange={(e) => updateVolume(idx, 'container_path', e.target.value)}
                   className='w-full'
@@ -441,8 +461,10 @@ export default function CustomAppModal({
         {/* Environment Variables */}
         <div>
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Environment Variables</label>
-            <StyledButton size="sm" variant="ghost" icon="IconPlus" onClick={addEnv}>Add Variable</StyledButton>
+            <label className="text-sm font-medium">{t('customAppModal.envVariables')}</label>
+            <StyledButton size="sm" variant="ghost" icon="IconPlus" onClick={addEnv}>
+              {t('customAppModal.addVariable')}
+            </StyledButton>
           </div>
           <div className="space-y-2">
             {envVars.map((e, idx) => (
@@ -465,20 +487,20 @@ export default function CustomAppModal({
               </div>
             ))}
             {envVars.length === 0 && (
-              <p className="text-xs italic">No environment variables provided.</p>
+              <p className="text-xs italic">{t('customAppModal.noEnvVariables')}</p>
             )}
           </div>
         </div>
 
         {/* Advanced: resource limits */}
         <div>
-          <label className="text-sm font-medium">Resource Limits (optional)</label>
+          <label className="text-sm font-medium">{t('customAppModal.resourceLimits')}</label>
           <div className="grid grid-cols-2 gap-4 mt-1">
             <Input
               name='memoryMb'
               label=''
               type="number"
-              placeholder="Memory (MB) — default 1024"
+              placeholder={t('customAppModal.memoryPlaceholder')}
               value={memoryMb}
               onChange={(e) => setMemoryMb(e.target.value)}
               className='w-full'
@@ -487,20 +509,20 @@ export default function CustomAppModal({
               name='cpus'
               label=''
               type="number"
-              placeholder="CPUs — default 1"
+              placeholder={t('customAppModal.cpusPlaceholder')}
               value={cpus}
               onChange={(e) => setCpus(e.target.value)}
               className='w-full'
             />
           </div>
-          <p className="text-xs mt-1 italic">Caps prevent a runaway container from starving the host. Leave blank to use the defaults (1024 MB / 1 CPU).</p>
+          <p className="text-xs mt-1 italic">{t('customAppModal.resourceLimitsHelp')}</p>
         </div>
 
         {/* Hard blocks — must be resolved before installing */}
         {hasBlocks && (
           <div className="space-y-2">
             {blocked.map((b, i) => (
-              <Alert key={i} type="error" title="Not allowed" message={b} />
+              <Alert key={i} type="error" title={t('customAppModal.notAllowedTitle')} message={b} />
             ))}
           </div>
         )}
@@ -512,12 +534,17 @@ export default function CustomAppModal({
               <Alert
                 key={c.port}
                 type="warning"
-                title={`Port ${c.port} is already in use`}
-                message={`Currently bound by: ${c.usedBy}. Installation may fail.`}
+                title={t('customAppModal.portInUseTitle', { port: c.port })}
+                message={t('customAppModal.portInUseMessage', { usedBy: c.usedBy })}
               />
             ))}
             {resourceWarnings.map((w, i) => (
-              <Alert key={i} type="warning" title="Resource warning" message={w} />
+              <Alert
+                key={i}
+                type="warning"
+                title={t('customAppModal.resourceWarningTitle')}
+                message={w}
+              />
             ))}
             <label className="flex items-center gap-2 cursor-pointer select-none mt-1">
               <input
@@ -526,13 +553,15 @@ export default function CustomAppModal({
                 onChange={(e) => setForceInstall(e.target.checked)}
                 className="accent-desert-orange h-4 w-4 rounded"
               />
-              <span className="text-text-muted text-xs">I understand — install anyway</span>
+              <span className="text-text-muted text-xs">{t('customAppModal.installAnyway')}</span>
             </label>
           </div>
         )}
 
         <p className="text-sm">
-          Containers are created with <code className="font-mono">--restart=unless-stopped</code>. Data is not persisted unless you add volume mounts above.
+          {t('customAppModal.restartPolicyBefore')}{' '}
+          <code className="font-mono">--restart=unless-stopped</code>
+          {t('customAppModal.restartPolicyAfter')}
         </p>
       </div>
     </StyledModal>
